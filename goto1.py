@@ -13,12 +13,16 @@ from readchar import readkey
 
 import string
 import math
+
 import ephem
 from ephem import *	  
-import RPi.GPIO as GPIO
 
+# Raspberry Pi GPIO access
+import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
+# DRV8825 has 3 pins to control microstepping (full to 1/32). 
+# There are better drivers out there. The issue is the unequal step size.
 MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
 			  '1/2': (1, 0, 0),
 			  '1/4': (0, 1, 0),
@@ -26,15 +30,18 @@ MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
 			  '1/16': (0, 0, 1),
 			  '1/32': (1, 0, 1)}
 
+# This is to update steps / revolution when changing microstepping
 MICROSTEP_FACTOR = { 'Full': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32 }
 
 track_refresh_interval = 10.0
 
 
-## ALtitude
+
+##### ALtitude control
 
 DIR_ALT = 16   # Direction GPIO Pin
 STEP_ALT = 20  # Step GPIO Pin
+
 CW_ALT = 1	 # Clockwise Rotation
 CCW_ALT = 0	# Counterclockwise Rotation
 
@@ -65,8 +72,7 @@ altitude = 0.0
 
 
 
-
-## Azimuth
+##### Azimuth control
 
 DIR_AZ = 19 # Direction GPIO Pin
 STEP_AZ = 26 # Step GPIO Pin
@@ -102,35 +108,101 @@ azimuth = 0.0
 
 ################## other parameters
 
-same = "0 0"
-same_str = ""
-same_coord = "Az 0 Alt 0"
+same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
+same_str = "" # print-ready version of same (only when same is a body)
 
-last_location_file = "last_location_file.txt"
+last_location_file = "last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
 
 
 ################## ephem
 
-marisel = ephem.Observer()
-marisel.lat, marisel.lon = '46.680821', '23.152553'
-marisel.elevation = 1050
-marisel.pressure, marisel.temp = 1013, 15 # stellarium settings
+##### observers (observing location on the earth)
+observers_file = "observers.txt"
 
-cluj = ephem.Observer()
-cluj.lat, cluj.lon = '46.7424895', '23.5650096'
-cluj.elevation = 850
-cluj.pressure, cluj.temp = 1013, 15 # stellarium settings
-#cluj.horizon="0:34"
-#cluj.date = '2020/7/17 12:52'
+# reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
+def gather_observers():
+    
+    observers_lines = open(observers_file, "r").readlines()
+    observers = {}
+    
+    for line in observers_lines:
+        line=line.strip()
+    
+        # Skip comments
+        if line.startswith('#'):
+            continue
+        
+        pound = line.find("#")
+        if pound >= 0:
+            line = line[:pound]
+        
+        # new observer
+        elements = line.split(";") 
+        
+        observer = ephem.Observer()
+        observer.lat, observer.lon = elements[1], elements[2]
+        
+        if len(elements) >= 3:
+            observer.elevation = elements[3]
+        
+        if len(elements) >= 4:
+            observer.pressure, observer.temp = elements[4], elements[5] 
+        else: 
+            observer.pressure, observer.temp = 1013, 15# stellarium settings
+        
+        observers[elements[0]] = observer
+    
+    return (observers)
 
-observer = cluj
+observers = gather_observers()
 
+def set_observer(new_observer):
+    while True:
+        if new_observer is None:
+            new_observer = input("Type the name of the observer location as defined in " + observers_file + " or 'c' to cancel: ")
+        
+        if new_observer == "c": return ()
+        elif new_observer in observers.keys():
+            #observer = observers
+            return (observers[new_observer], new_observer)
+
+
+
+observer_name == "cluj"
+observer = set_observer(observer_name)
+
+
+#marisel = ephem.Observer()
+#marisel.lat, marisel.lon = '46.680821', '23.152553'
+#marisel.elevation = 1050
+#marisel.pressure, marisel.temp = 1013, 15 # stellarium settings
+
+#cluj = ephem.Observer()
+#cluj.lat, cluj.lon = '46.7424895', '23.5650096'
+#cluj.elevation = 850
+#cluj.pressure, cluj.temp = 1013, 15 # stellarium settings
+##cluj.horizon="0:34"
+##cluj.date = '2020/7/17 12:52'
+#
+#observer = cluj
+
+def get_observer():
+    print ("Current observing location: " + observer_name + ":")
+    print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) + 
+           "Elevtion: " + str(observer.elevation) + "\n" +
+           "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
+    
+###### available named bodies
+
+# named stars built into ephem
 list_of_stars = open("ephem_stars.txt", "r").readlines()
 list_of_stars = [star[:-1].lower() for star in list_of_stars]
 
+# named stars in an other catalog
 list_of_stars2 = open("YBS.txt", "r").readlines()
 list_of_stars2 = [star[:-1].lower() for star in list_of_stars2]
 
+# there is a way to infer what kind of celestial body is one
 def describe_body( subfields ):
 	# Map the edb format type-subfield codes to presentable text
 	if subfields[0] == 'P':
@@ -167,8 +239,9 @@ def describe_body( subfields ):
 	if subfields[0] == 'f':
 		return FIXED_BODY_MAP[subfields[1]]  
 		
-	return "?"	
+	return "?"
 
+# reads an arbitrary edb file
 def read_database( filename ):
 	# Read a set of bodies from an EDB file. 
 	bodies = []
@@ -187,7 +260,9 @@ def read_database( filename ):
 			# Skip malformed lines
 			if "," not in line:
 				continue			  
-
+            
+            # describe body
+            #line = line.replace(",f,", ",f|?,") # temporary precausion to make describe_body() shut up; most are already done
 			# Split the line apart.
 			elements = line.split(",") 
 			# Extract the name
@@ -197,35 +272,41 @@ def read_database( filename ):
 			# Map those to a description
 			desc = describe_body(subfields)  
 			
-			# Give the whole line to pyephem
-			body = readdb(line.replace(",f|?,", ",f,"))
+			# Give the whole line to pyephem; # revent the previous "fix"
+			body = ephem.readdb(line.replace(",f|?,", ",f,"))
 			
 			bodies.append( (name, desc,body) )
 		
 	return bodies
 
-def dso_candidates(catalog_file):	
-	# Read a catalog for DSO candidate targets.
-	return read_database( catalog_file )
-
+# wrapper around ephem.compute(); there is a more "pattern-y" way to do it but why bother...
+# given a celestial body and an observer location (both ephem classes), get current coordinates (Az, Alt)
 def compute(thing, observer):
 	now = datetime.utcnow()
 	observer.date = now
 	thing.compute(observer)
 	print("Angle Az Alt:", thing.az, thing.alt)
 	return(thing.az*180/math.pi, thing.alt*180/math.pi)
+	
 	#return(#ephem.degrees(thing.az), ephem.degrees(thing.alt), 
 	#	thing.az*180/math.pi, thing.alt*180/math.pi)
 
 
 ################## ephem: search
 
+# search body name in a list of ephem bodies
+# TODO: use a dictionary, dumbass
 def find_body_by_name(name, catalog):
 	for body in catalog:
 		if body[0] == name:
 			print(body)
 			return body[2]
 	return (None)
+
+# only called from inside a higer level search function
+# look for and get coordinates of an arbitrary "target" named body
+# TODO: use a dictionary, dumbass
+# TODO: have better flexibility when searching
 
 def search_0(target):
 	if target.lower() == "sun": thing = ephem.Sun()
@@ -237,29 +318,29 @@ def search_0(target):
 	elif target.lower() == "saturn": thing = ephem.Saturn()
 	elif target.lower() == "uranus": thing = ephem.Uranus()
 	elif target.lower() == "neptune": thing = ephem.Neptune()
-	elif target.lower()[0] == 'm' and target[1:].isnumeric() and int(target[1:]) <= 111: # TEMP: M111 = C/2020 F3 NEOWISE
-		messier = dso_candidates("Messier.edb")
+	elif target.lower()[0] == 'm' and target[1:].isnumeric() and int(target[1:]) <= 110:
+		messier = read_database("Messier.edb")
 		name = "M" + target[1:].strip()
 		thing = find_body_by_name(name, messier)
 	elif target.lower().startswith('ic'): 
-		ic = dso_candidates("IC.edb")
+		ic = read_database("IC.edb")
 		name = "IC" + target[2:].strip()
 		thing = find_body_by_name(name, ic)
 	elif target.lower().startswith('ngc'): 
-		ngc = dso_candidates("NGC.edb")
+		ngc = read_database("NGC.edb")
 		name = "NGC" + target[3:].strip()
 		thing = find_body_by_name(name, ngc)
 	elif target.lower().startswith('ugc'): # also UGCA 
-		ugc = dso_candidates("UGC.edb")
+		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
 	elif target.lower().endswith("xxx") or target.lower() == "neowise": 
-		neowise = dso_candidates("neowise.edb")
+		neowise = read_database("neowise.edb")
 		thing = find_body_by_name("C/2020 F3 (NEOWISE)", neowise)
 	elif target.lower() in list_of_stars:
 		thing = ephem.star(string.capwords(target))
 	elif target.lower().strip() in list_of_stars2:
-		YBS = dso_candidates("YBS.edb")
+		YBS = read_database("YBS.edb")
 		star = list_of_stars2.index( target.lower().strip() )
 		print("Other stars catalog: " + YBS[star][0])
 		thing = YBS[star][2]
@@ -269,13 +350,13 @@ def search_0(target):
 	
 	return(compute(thing, observer))
 
-
+# actual search function called from the UI
 def search():
-	global same
+	global same # TODO: the error!
 	global same_str
 	
 	print("List of available stars:")
-	print(list_of_stars)
+	print(list_of_stars) # TODO: print more
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
@@ -295,7 +376,7 @@ def search():
 			if location is None:
 				print("Not found. Try again. ")
 				continue
-			if location[1] < 0: 
+			if location[1] < 0: # maybe don't look below horizon...
 				alert = input("! Below horizon! Are you sure? [*/yes] ")
 				if alert != "yes": 
 					continue
@@ -326,6 +407,7 @@ def set_speed():
 	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / SPEED_ALT) + " seconds.")
 	print ("delay (Alt): " + str(delay_ALT) + " seconds.")
 
+# TODO: when micros changes, does location stay the same?
 def set_microstepping():
 	global microstep_az
 	global microstep_alt
@@ -345,12 +427,16 @@ def set_microstepping():
 	print ("Step size (Alt): " + str( 360.0 / SPR_ALT ) + " degrees. Microstepping: " + microstep_alt + " .")
 
 
+# when in tracking mode, update every ... seconds
 def set_track_refresh_interval():
 	global track_refresh_interval
 	track_refresh_interval = float(input("Tracking refresh interval (seconds): "))
 
 ################## backup location
-	
+
+# whenever the current location changes, update a file just in case. 
+# one could reterive back the information and restart at the last kown location
+
 def recover_last_location():
 	with open(last_location_file) as f:
 		# Look at each line of the file
@@ -388,7 +474,7 @@ def save_location():
 		f.write(line)
 
 
-################## set location
+################## set curent location
 
 def set_location():
 	global azimuth
@@ -405,7 +491,9 @@ def set_location():
 	save_location()
 
 
-################## move 1 step
+################## move 1 step at a time (or microstep)
+
+# there is the option to update or not to update the location as you move
 
 def up_1_step(update_position = True):
 	GPIO.output(DIR_ALT, CCW_ALT)
@@ -529,7 +617,7 @@ def left_1(update_position = True):
 			save_location()
 
 
-################## manual drive
+################## manual drive mode
 
 def manual_drive():
 	print("Mamual drive with arrows to move slowly and awsd to move 1 deg at a time.")
@@ -538,12 +626,12 @@ def manual_drive():
 		key = getkey()
 		if key == keys.UP: up_1_step(update_position = True)
 		elif key == keys.DOWN: down_1_step(update_position = True)
-		elif key == keys.LEFT: left_1_step(update_position = True) #
-		elif key == keys.RIGHT: right_1_step(update_position = True) #
+		elif key == keys.LEFT: left_1_step(update_position = True) 
+		elif key == keys.RIGHT: right_1_step(update_position = True) 
 		elif key == 'w': up_1(update_position = True)
 		elif key == 's': down_1(update_position = True)
-		elif key == 'a': left_1(update_position = True) #
-		elif key == 'd': right_1(update_position = True) #
+		elif key == 'a': left_1(update_position = True) 
+		elif key == 'd': right_1(update_position = True)
 		elif key == '?': get_location()
 		elif key == '!': get_status()
 		elif key == 'c': break
@@ -551,6 +639,11 @@ def manual_drive():
 
 
 ################## move
+
+# move a specific arc at a specified speed
+# currently, only called from within go_to_location(), but this will probably change
+# TODO?: maybe move both axes at the same time? It looks cooler, but not really worth it.
+# TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
 # not called directly by the user
 def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0):
@@ -597,7 +690,7 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0
 	save_location()
 
 
-
+# let the user specify a location (coordinates or named body) and go there
 def go_to_location():
 	target_az =  -1
 	target_alt = -1
@@ -629,7 +722,7 @@ def go_to_location():
 	delta_az = min(delta_az_right, delta_az_left)
 	direction_az = ("left", "right")[delta_az_right < delta_az_left] 
 	
-	if altitude > 180: delta_alt = target_alt - altitude + 360
+	if altitude > 180: delta_alt = target_alt - altitude + 360 # TODO: should not happen under regular usage!
 	else: delta_alt = target_alt - altitude
 	direction_alt = ("down", "up")[delta_alt > 0.0]
 
@@ -638,6 +731,9 @@ def go_to_location():
 	
 
 ################## track
+
+# in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
+# meanwhile, the user can manually fine-tune the position of the telescope so the actual position coresponds to the position the software thinks it should be pointing to
 
 # accept keyboard input (c or tuning directions) while waiting between moves
 # the regular getkey method is not good because it does not expire after a set timeout
@@ -788,6 +884,8 @@ def show_options():
 	print ("8. manual drive")
 	print ("9. fuck off")
 	print ("10. recover last location")
+	print ("11. set observer location")
+	print ("12. get observer location")
 
 def switch_main(option):
 	switcher = {
@@ -801,7 +899,9 @@ def switch_main(option):
 		7: get_location,
 		8: manual_drive,
 		9: quit_nicely,
-		10: recover_last_location
+		10: recover_last_location,
+		11: set_observer,
+		12: get_observer
 	}
 	func = switcher.get(option, show_options)
 	func()
