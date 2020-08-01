@@ -117,54 +117,57 @@ last_location_file = "last_location_file.txt" # keep a record of the last known 
 ################## ephem
 
 ##### observers (observing location on the earth)
+# ephem knows a list of cities, but it's too small.
+# TODO: use some online thing to get gps coordinates, elevation and even pressure and temperature
+
 observers_file = "observers.txt"
 
 # reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
 def gather_observers():
-    
-    observers_lines = open(observers_file, "r").readlines()
-    observers = {}
-    
-    for line in observers_lines:
-        line=line.strip()
-    
-        # Skip comments
-        if line.startswith('#'):
-            continue
-        
-        pound = line.find("#")
-        if pound >= 0:
-            line = line[:pound]
-        
-        # new observer
-        elements = line.split(";") 
-        
-        observer = ephem.Observer()
-        observer.lat, observer.lon = elements[1], elements[2]
-        
-        if len(elements) >= 3:
-            observer.elevation = elements[3]
-        
-        if len(elements) >= 4:
-            observer.pressure, observer.temp = elements[4], elements[5] 
-        else: 
-            observer.pressure, observer.temp = 1013, 15# stellarium settings
-        
-        observers[elements[0]] = observer
-    
-    return (observers)
+	
+	observers_lines = open(observers_file, "r").readlines()
+	observers = {}
+	
+	for line in observers_lines:
+		line=line.strip()
+	
+		# Skip comments
+		if line.startswith('#'):
+			continue
+		
+		pound = line.find("#")
+		if pound >= 0:
+			line = line[:pound]
+		
+		# new observer
+		elements = line.split(";") 
+		
+		observer = ephem.Observer()
+		observer.lat, observer.lon = elements[1], elements[2]
+		
+		if len(elements) >= 3:
+			observer.elevation = elements[3]
+		
+		if len(elements) >= 4:
+			observer.pressure, observer.temp = elements[4], elements[5] 
+		else: 
+			observer.pressure, observer.temp = 1013, 15# stellarium settings
+		
+		observers[elements[0]] = observer
+	
+	return (observers)
 
 observers = gather_observers()
 
 def set_observer(new_observer):
-    while True:
-        if new_observer is None:
-            new_observer = input("Type the name of the observer location as defined in " + observers_file + " or 'c' to cancel: ")
-        
-        if new_observer == "c": return ()
-        elif new_observer in observers.keys():
-            #observer = observers
-            return (observers[new_observer], new_observer)
+	while True:
+		if new_observer is None:
+			new_observer = input("Type the name of the observer location as defined in " + observers_file + " or 'c' to cancel: ")
+		
+		if new_observer == "c": return ()
+		elif new_observer in observers.keys():
+			#observer = observers
+			return (observers[new_observer], new_observer)
 
 
 
@@ -187,11 +190,11 @@ observer = set_observer(observer_name)
 #observer = cluj
 
 def get_observer():
-    print ("Current observing location: " + observer_name + ":")
-    print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) + 
-           "Elevtion: " + str(observer.elevation) + "\n" +
-           "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
-    
+	print ("Current observing location: " + observer_name + ":")
+	print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) + 
+		   "Elevtion: " + str(observer.elevation) + "\n" +
+		   "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
+	
 ###### available named bodies
 
 # named stars built into ephem
@@ -260,9 +263,9 @@ def read_database( filename ):
 			# Skip malformed lines
 			if "," not in line:
 				continue			  
-            
-            # describe body
-            #line = line.replace(",f,", ",f|?,") # temporary precausion to make describe_body() shut up; most are already done
+			
+			# describe body
+			#line = line.replace(",f,", ",f|?,") # temporary precausion to make describe_body() shut up; most are already done
 			# Split the line apart.
 			elements = line.split(",") 
 			# Extract the name
