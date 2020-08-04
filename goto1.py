@@ -654,8 +654,13 @@ def manual_drive():
 # TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
 # not called directly by the user
-def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0):
+def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
+	
+	if amount_az < 0: # revert direction
+		if direction_az == "right": direction_az = "left"
+		else: direction_az == "left"
+		amount_az = abs(amount_az)
 
 	global azimuth
 	step_count_az =  int(round(amount_az *  SPR_AZ  / 360.0)) 
@@ -670,15 +675,21 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0
 			sleep(delay_az)
 			GPIO.output(STEP_AZ, GPIO.LOW)
 			sleep(delay_az)
-
-			if direction_az == "right":  azimuth = azimuth + 360.0 / SPR_AZ
-			else: azimuth = azimuth - 360.0 / SPR_AZ
-			azimuth = azimuth % 360.0
+			
+			if update_position:
+				if direction_az == "right":  azimuth = azimuth + 360.0 / SPR_AZ
+				else: azimuth = azimuth - 360.0 / SPR_AZ
+				azimuth = azimuth % 360.0
 
 	###
+	if amount_alt < 0: # revert direction
+		if direction_alt == "up": direction_alt = "down"
+		else: direction_alt == "up"
+		amount_alt = abs(amount_alt)
 
 	global altitude
 	step_count_alt =  int(round(amount_alt *  SPR_ALT  / 360.0))
+	#print("step count alt: " + str(step_count_alt))
 	if step_count_alt > 0:
 		if direction_alt == "up":  GPIO.output(DIR_ALT, CCW_ALT)
 		else: GPIO.output(DIR_ALT, CW_ALT)  
@@ -691,12 +702,116 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0
 			GPIO.output(STEP_ALT, GPIO.LOW)
 			sleep(delay_alt)
 
-			if direction_alt == "up":  altitude = altitude + 360.0 / SPR_ALT
-			else: altitude = altitude - 360.0 / SPR_ALT
-			altitude = altitude % 360.0
+			if update_position:
+				if direction_alt == "up":  altitude = altitude + 360.0 / SPR_ALT
+				else: altitude = altitude - 360.0 / SPR_ALT
+				altitude = altitude % 360.0
 			
 	save_location()
 
+######### Scan sky
+
+# accept keyboard input (c or tuning directions) while waiting between moves
+# the regular getkey method is not good because it does not expire after a set timeout
+def wait_for_scan_sky(timeout):
+	pid = os.getpid()
+	sig = signal.SIGINT
+	timer = Timer(timeout, lambda: os.kill(pid, sig))
+	print(f"Press 'c' to cancel, ? / ! to get stauts. Next move in {timeout} seconds. ")
+	timer.start()  # spawn a worker thread to interrupt us later
+	#paused = False
+	while True:
+		key = readkey()
+		#print(f"received {k!r}")
+		if key == 'c':
+			print("Exiting scanning mode...")
+			timer.cancel()  # cancel the timer
+			return (True)
+		#elif key == 'p' and not paused:
+			#print("Pausing tracking mode...")
+			#paused = True
+			#timer.cancel()  # pause the timer
+		#elif key == 'p' and paused:
+			#print("Resuming tracking mode...")
+			#paused = False
+			##timer.start()  # resume the timer
+			#return(False)
+		elif key == '?': get_location()
+		elif key == '!': get_status()
+		#elif key == keys.UP: up_1_step(update_position = False)
+		#elif key == keys.DOWN: down_1_step(update_position = False)
+		#elif key == keys.LEFT: left_1_step(update_position = False) #
+		#elif key == keys.RIGHT: right_1_step(update_position = False) #
+		#elif key == 'w': up_1(update_position = False)
+		#elif key == 's': down_1(update_position = False)
+		#elif key == 'a': left_1(update_position = False) #
+		#elif key == 'd': right_1(update_position = False) 
+		
+	#return (None)
+
+# moves around the current location to allow the user to spot a body
+def scan_sky():
+	
+	# defaults for WA15 eypeice
+	#amount_total = 5
+	#amount_step = 0.5 
+	#pause = 2
+	
+	amount_total, amount_step, pause =  map(float, input("Total area scaned (degrees), increment size (degrees) and cooldwon pause between steps (seconds): ").split()) 
+	
+	# start in the lower left corner of the scan area
+	# I am now in the center of the area
+	# move half the scaing area, down and left, from the center of the area
+	steps = int(math.ceil(amount_total/amount_step))
+	print("Steps / row: " + str(steps))
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ, 
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+		 update_position = False)
+	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = SPEED_AZ, 
+		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+		 #update_position = False)
+	
+	#sleep (pause) # wait to spot something
+	try:
+		if wait_for_scan_sky( pause ) ==  True: return()
+	except KeyboardInterrupt as err: # accept Ctrl+c
+		pass
+	
+	# move 1 step at a time, upwords, right then left, row by row
+	#steps = int(math.ceil(amount_total/amount_step))
+	for i in range(steps): # azimuth
+		for j in range(steps): # altitude
+			
+			# change direction between rows
+			if i % 2 == 0: direction_az = "right"
+			else: direction_az = "left"
+			
+			
+			move(amount_az = amount_step, direction_az = direction_az, speed_az = SPEED_AZ, 
+				amount_alt = 0, direction_alt = "up", speed_alt = SPEED_ALT, 
+				update_position = False)
+			
+			#sleep (pause) # wait to spot something
+			try:
+				if wait_for_scan_sky( pause ) ==  True: return()
+			except KeyboardInterrupt as err: # accept Ctrl+c
+				pass
+		
+		# next row
+		move(amount_az = 0, direction_az = "right", speed_az = 1.0, 
+			amount_alt = amount_step, direction_alt = "up", speed_alt = 1.0, 
+			update_position = False)
+	
+	
+	# return to original location
+	# I am now in the top-right corner of the scanned area
+	# move half the scaing area, down and left, from the top-right corner
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ, 
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+		 update_position = False)
+	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = 1.0, 
+		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = 1.0, 
+		 #update_position = False)
 
 # let the user specify a location (coordinates or named body) and go there
 def go_to_location():
@@ -894,6 +1009,7 @@ def show_options():
 	print ("10. recover last location")
 	print ("11. set observer location")
 	print ("12. get observer location")
+	print ("13. scan area")
 
 def switch_main(option):
 	switcher = {
@@ -909,7 +1025,8 @@ def switch_main(option):
 		9: quit_nicely,
 		10: recover_last_location,
 		11: set_observer,
-		12: get_observer
+		12: get_observer,
+		13: scan_sky
 	}
 	func = switcher.get(option, show_options)
 	func()
