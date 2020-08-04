@@ -33,7 +33,7 @@ MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
 # This is to update steps / revolution when changing microstepping
 MICROSTEP_FACTOR = { 'Full': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32 }
 
-track_refresh_interval = 10.0
+track_refresh_interval = 20.0
 
 
 
@@ -129,29 +129,28 @@ def gather_observers():
 	observers = {}
 	
 	for line in observers_lines:
-		line=line.strip()
+		line = line.strip()
 	
 		# Skip comments
-		if line.startswith('#'):
-			continue
+		if line.startswith('#'): continue # try next line
 		
 		pound = line.find("#")
-		if pound >= 0:
-			line = line[:pound]
+		if pound >= 0: line = line[:pound] # remove comments at the end of the line
 		
 		# new observer
-		elements = line.split(";") 
+		elements = str(line).split(sep=';') 
+		if len(elements) < 3: continue # not a valid observer; try next line
 		
 		observer = ephem.Observer()
 		observer.lat, observer.lon = elements[1], elements[2]
 		
 		if len(elements) >= 3:
-			observer.elevation = elements[3]
+			observer.elevation = float(elements[3])
 		
 		if len(elements) >= 4:
-			observer.pressure, observer.temp = elements[4], elements[5] 
+			observer.pressure, observer.temp = float(elements[4]), float(elements[5])
 		else: 
-			observer.pressure, observer.temp = 1013, 15# stellarium settings
+			observer.pressure, observer.temp = 1013, 15# Stellarium settings
 		
 		observers[elements[0]] = observer
 	
@@ -159,20 +158,26 @@ def gather_observers():
 
 observers = gather_observers()
 
-def set_observer(new_observer):
+def set_observer(new_observer = None):
+	with_arg = True if new_observer is None else False
 	while True:
-		if new_observer is None:
-			new_observer = input("Type the name of the observer location as defined in " + observers_file + " or 'c' to cancel: ")
+		if with_arg: # if new_observer is None:
+			print ("Currently available obsever locations as defined in " + observers_file + ": " + ", ".join(observers.keys()) + ". ")
+			new_observer = input("Type the name of the observer location or 'c' to cancel: ")
 		
 		if new_observer == "c": return ()
 		elif new_observer in observers.keys():
 			#observer = observers
+			if with_arg:
+				global observer
+				global observer_name
+				observer, observer_name = observers[new_observer], new_observer
 			return (observers[new_observer], new_observer)
 
 
 
-observer_name == "cluj"
-observer = set_observer(observer_name)
+observer_name = "cluj"
+observer, observer_name = set_observer(observer_name)
 
 
 #marisel = ephem.Observer()
