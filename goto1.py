@@ -300,6 +300,20 @@ def compute(thing, observer):
 	#	thing.az*180/math.pi, thing.alt*180/math.pi)
 
 
+# make a fake star, mostly for tracking arbitrary Az/Alt
+fake_star = ephem.FixedBody()
+def make_fake_star(az = None, alt = None):
+	if az is None or alt is None: # no args
+		az, alt = input("Define fake star by Az Alt: ").strip().split().map(float)
+	
+	global fake_star
+	fake_star = ephem.FixedBody()
+	fake_star._ra, fake_star._dec = observer.radec_of(az, alt)
+	fake_star._epoch = ephem.J2000
+	#fake_star.compute( observer )
+	#print( cano.az, cano.alt)
+	return fake_star
+
 ################## ephem: search
 
 # search body name in a list of ephem bodies
@@ -352,6 +366,8 @@ def search_0(target):
 		star = list_of_stars2.index( target.lower().strip() )
 		print("Other stars catalog: " + YBS[star][0])
 		thing = YBS[star][2]
+	elif target == "fake": # fake body, defined by az/alt
+		thing = fake_star
 	else: return(None)
 
 	if thing is None: return (None)
@@ -932,12 +948,22 @@ def track():
 	
 		print ("Will move Az from " + str(azimuth) + " to " + str(target_az) + " and Alt from " + str(altitude) + " to " + str(target_alt))
 		
-		delta_az = abs(target_az - azimuth)
-		delta_az %= 360.0
-		delta_az = 180.0 - abs(delta_az - 180.0)
-		if (azimuth + delta_az) % 360.0 == target_az:
-			direction_az = "right"
-		else: direction_az = "left"
+		######### changhed ti the same algoritm as in go_to_location()
+		
+		#delta_az = abs(target_az - azimuth)
+		#delta_az %= 360.0
+		#delta_az = 180.0 - abs(delta_az - 180.0)
+		#if (azimuth + delta_az) % 360.0 == target_az:
+			#direction_az = "right"
+		#else: direction_az = "left"
+		
+		Az = azimuth + 360.0
+		TAz = target_az + 360.0
+		delta_az_right = (TAz - Az) % 360.0
+		delta_az_left  = (Az - TAz) % 360.0
+	
+		delta_az = min(delta_az_right, delta_az_left)
+		direction_az = ("left", "right")[delta_az_right < delta_az_left] 
 		
 		if altitude > 180: delta_alt = target_alt - altitude + 360
 		else: delta_alt = target_alt - altitude
@@ -1010,6 +1036,7 @@ def show_options():
 	print ("11. set observer location")
 	print ("12. get observer location")
 	print ("13. scan area")
+	print ("14. define fake star")
 
 def switch_main(option):
 	switcher = {
@@ -1026,7 +1053,8 @@ def switch_main(option):
 		10: recover_last_location,
 		11: set_observer,
 		12: get_observer,
-		13: scan_sky
+		13: scan_sky,
+		13: make_fake_star
 	}
 	func = switcher.get(option, show_options)
 	func()
