@@ -83,7 +83,7 @@ GPIO.setup(DIR_AZ, GPIO.OUT)
 GPIO.setup(STEP_AZ, GPIO.OUT)
 GPIO.output(DIR_AZ, CW_AZ)
 
-microstep_az = '1/8'
+microstep_az = '1/4'
 SPR_BASE_AZ = 200*(360/36) # Steps per Revolution (360 / 1.8)
 SPR_AZ = SPR_BASE_AZ * MICROSTEP_FACTOR[ microstep_az ]
 
@@ -670,7 +670,9 @@ def manual_drive():
 # TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
 # not called directly by the user
-def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, update_position = True):
+def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 1, 
+         amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 1, 
+         update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
 	
 	if amount_az < 0: # revert direction
@@ -680,7 +682,7 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0
 
 	global azimuth
 	step_count_az =  int(round(amount_az *  SPR_AZ  / 360.0)) 
-	if step_count_az > 0:
+	if step_count_az >= min_steps_az:
 		if direction_az == "right":  GPIO.output(DIR_AZ, CW_AZ)
 		else: GPIO.output(DIR_AZ, CCW_AZ)  
 		delay_az = 360.0 / (speed_az * SPR_AZ * 2.0)
@@ -706,7 +708,7 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, amount_alt = 0
 	global altitude
 	step_count_alt =  int(round(amount_alt *  SPR_ALT  / 360.0))
 	#print("step count alt: " + str(step_count_alt))
-	if step_count_alt > 0:
+	if step_count_alt >= min_steps_alt:
 		if direction_alt == "up":  GPIO.output(DIR_ALT, CCW_ALT)
 		else: GPIO.output(DIR_ALT, CW_ALT)  
 		delay_alt = 360.0 / (speed_alt * SPR_ALT * 2.0)
