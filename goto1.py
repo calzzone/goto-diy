@@ -695,6 +695,8 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az =
 		delay_az = 360.0 / (speed_az * SPR_AZ * 2.0)
 		print ("Az will move " + direction_az + " " + str(step_count_az) + " steps, at a speed of " + str(speed_az) + " degrees / second")
 		
+		temp_min_delay_az = delay_az / ramp_az_max_speed_factor
+		
 		for x in range(int(step_count_az)):
 			if step_count_az > ramp_az_threshold:
 				if x < step_count_az / 2: # ramp-up or stall
