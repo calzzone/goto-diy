@@ -674,8 +674,8 @@ def manual_drive():
 # ramp-up, stall, then ramp-down
 ramp_az_threshold = 30 # only ramp if you have to move more than 50 steps
 ramp_alt_threshold = 30
-ramp_az_rate = 1 - 0.005 # 1% faster each step
-ramp_alt_rate = 1 - 0.01
+ramp_az_rate = 1 - 0.005 # 0.5% faster each step
+ramp_alt_rate = 1 - 0.005
 ramp_az_max_speed_factor = 5 # ramp up until 4 times faster than base speed
 ramp_alt_max_speed_factor = 5
 
