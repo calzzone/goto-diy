@@ -669,9 +669,16 @@ def manual_drive():
 # TODO?: maybe move both axes at the same time? It looks cooler, but not really worth it.
 # TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
+ramp_az_threshold = 10 # only ramp if you have to move more than 50 steps
+ramp_alt_threshold = 50
+ramp_az_rate = 1 - 0.01 # 1% faster each step
+ramp_alt_rate = 1 - 0.01
+ramp_az_max_speed_factor = 4 # ramp up until 4 times faster than base speed
+ramp_alt_max_speed_factor = 4
+
 # not called directly by the user
-def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 1, 
-		amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 1, 
+def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
+		amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
 		update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
 	
@@ -689,6 +696,16 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az =
 		print ("Az will move " + direction_az + " " + str(step_count_az) + " steps, at a speed of " + str(speed_az) + " degrees / second")
 		
 		for x in range(int(step_count_az)):
+			if step_count_az > ramp_az_threshold:
+				if x < step_count_az / 2: # ramp-up or stall
+					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**x) # ! do not below min delay 
+				else: # ramp-down
+					y = step_count_az - x
+					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**y) # ! do not below min delay 
+			else: temp_delay_az = delay_az
+			
+			print (round(temp_delay_az*1000, 3))
+				
 			GPIO.output(STEP_AZ, GPIO.HIGH)
 			sleep(delay_az)
 			GPIO.output(STEP_AZ, GPIO.LOW)
