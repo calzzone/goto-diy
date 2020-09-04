@@ -669,12 +669,12 @@ def manual_drive():
 # TODO?: maybe move both axes at the same time? It looks cooler, but not really worth it.
 # TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
-ramp_az_threshold = 10 # only ramp if you have to move more than 50 steps
-ramp_alt_threshold = 50
+ramp_az_threshold = 30 # only ramp if you have to move more than 50 steps
+ramp_alt_threshold = 30
 ramp_az_rate = 1 - 0.01 # 1% faster each step
 ramp_alt_rate = 1 - 0.01
-ramp_az_max_speed_factor = 4 # ramp up until 4 times faster than base speed
-ramp_alt_max_speed_factor = 4
+ramp_az_max_speed_factor = 5 # ramp up until 4 times faster than base speed
+ramp_alt_max_speed_factor = 5
 
 # not called directly by the user
 def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
@@ -706,12 +706,12 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az =
 					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**y) # ! do not below min delay 
 			else: temp_delay_az = delay_az
 			
-			print (round(temp_delay_az*1000, 3))
+			#print (round(temp_delay_az*1000, 3))
 				
 			GPIO.output(STEP_AZ, GPIO.HIGH)
-			sleep(delay_az)
+			sleep(temp_delay_az)
 			GPIO.output(STEP_AZ, GPIO.LOW)
-			sleep(delay_az)
+			sleep(temp_delay_az)
 			
 			if update_position:
 				if direction_az == "right":  azimuth = azimuth + 360.0 / SPR_AZ
@@ -733,11 +733,21 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az =
 		delay_alt = 360.0 / (speed_alt * SPR_ALT * 2.0)
 		print ("Alt will move " + direction_alt + " " + str(step_count_alt) + " steps, at a speed of " + str(speed_alt) + " degrees / second.")
 		
+		temp_min_delay_alt = delay_alt / ramp_alt_max_speed_factor
+		
 		for x in range(int(step_count_alt)):
+			if step_count_alt > ramp_alt_threshold:
+				if x < step_count_alt / 2: # ramp-up or stall
+					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**x) # ! do not below min delay 
+				else: # ramp-down
+					y = step_count_alt - x
+					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**y) # ! do not below min delay 
+			else: temp_delay_alt = delay_alt
+			
 			GPIO.output(STEP_ALT, GPIO.HIGH)
-			sleep(delay_alt)
+			sleep(temp_delay_alt)
 			GPIO.output(STEP_ALT, GPIO.LOW)
-			sleep(delay_alt)
+			sleep(temp_delay_alt)
 
 			if update_position:
 				if direction_alt == "up":  altitude = altitude + 360.0 / SPR_ALT
