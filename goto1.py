@@ -667,12 +667,15 @@ def manual_drive():
 # move a specific arc at a specified speed
 # currently, only called from within go_to_location(), but this will probably change
 # TODO?: maybe move both axes at the same time? It looks cooler, but not really worth it.
+
+
 # TODO: some acceletaion and deceleration profiles, probably also manipulating microstepping to increase spped, accuracy, noise and vibrations
 
+# ramp-up, stall, then ramp-down
 ramp_az_threshold = 30 # only ramp if you have to move more than 50 steps
 ramp_alt_threshold = 30
-ramp_az_rate = 1 - 0.01 # 1% faster each step
-ramp_alt_rate = 1 - 0.01
+ramp_az_rate = 1 - 0.05 # 1% faster each step
+ramp_alt_rate = 1 - 0.05
 ramp_az_max_speed_factor = 5 # ramp up until 4 times faster than base speed
 ramp_alt_max_speed_factor = 5
 
@@ -698,6 +701,8 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az =
 		temp_min_delay_az = delay_az / ramp_az_max_speed_factor
 		
 		for x in range(int(step_count_az)):
+            
+			# ramp-up, stall, then ramp-down: 
 			if step_count_az > ramp_az_threshold:
 				if x < step_count_az / 2: # ramp-up or stall
 					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**x) # ! do not below min delay 
