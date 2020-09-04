@@ -671,8 +671,8 @@ def manual_drive():
 
 # not called directly by the user
 def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 1, 
-         amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 1, 
-         update_position = True):
+		amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 1, 
+		update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
 	
 	if amount_az < 0: # revert direction
