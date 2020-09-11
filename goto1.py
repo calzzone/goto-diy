@@ -15,7 +15,7 @@ import string
 import math
 
 import ephem
-from ephem import *	  
+from ephem import *
 
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
@@ -206,9 +206,13 @@ def get_observer():
 list_of_stars = open("ephem_stars.txt", "r").readlines()
 list_of_stars = [star[:-1].lower() for star in list_of_stars]
 
+# named stars from YBS
+list_of_named_stars = open("named_stars.txt", "r").readlines()
+list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
+
 # named stars in an other catalog
-list_of_stars2 = open("YBS.txt", "r").readlines()
-list_of_stars2 = [star[:-1].lower() for star in list_of_stars2]
+list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 # there is a way to infer what kind of celestial body is one
 def describe_body( subfields ):
@@ -356,16 +360,13 @@ def search_0(target):
 		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
-	elif target.lower().endswith("xxx") or target.lower() == "neowise": 
-		neowise = read_database("neowise.edb")
-		thing = find_body_by_name("C/2020 F3 (NEOWISE)", neowise)
 	elif target.lower() in list_of_stars:
 		thing = ephem.star(string.capwords(target))
-	elif target.lower().strip() in list_of_stars2:
-		YBS = read_database("YBS.edb")
-		star = list_of_stars2.index( target.lower().strip() )
-		print("Other stars catalog: " + YBS[star][0])
-		thing = YBS[star][2]
+	elif target.lower().strip() in list_of_stars_YBS:
+		YBS2 = read_database("YBS2.edb")
+		star = list_of_stars_YBS.index( target.lower().strip() )
+		print("Other stars catalog: " + YBS2[star][0])
+		thing = YBS2[star][2]
 	elif target == "fake": # fake body, defined by az/alt
 		thing = fake_star
 	else: return(None)
@@ -380,7 +381,7 @@ def search():
 	global same_str
 	
 	print("List of available stars:")
-	print(list_of_stars) # TODO: print more
+	print(list_of_named_starsstars) # TODO: print more
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
