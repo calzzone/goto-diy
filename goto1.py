@@ -1082,28 +1082,8 @@ def get_status():
 def quit_nicely():
 	GPIO.cleanup()
 
+	
 def show_options():
-	print ("\nAvailable options:")
-	print ("0. set location")
-	print ("1. move to location")
-	print ("2. track body")
-	print ("3. get status")
-	print ("4. set track refresh interval")
-	print ("5. set microstepping")
-	print ("6. set speed (deg/sec)")
-	print ("7. get location")
-	print ("8. manual drive")
-	print ("9. fuck off")
-	print ("10. recover last location")
-	print ("11. set observer location")
-	print ("12. get observer location")
-	print ("13. scan area")
-	print ("14. define fake star")
-	print ("15. print named stars")
-	print ("16. print all avalilabe stars (YBS)")
-	
-	
-def show_options2():
 	print ("\nAvailable options:")
 	print ("0: quit_nicely")
 	print ("1-4: track, move, manual drive, scan")	
@@ -1113,30 +1093,7 @@ def show_options2():
 	print ("21, 22: print named stars, all available stars (YBS)")
 	print ("31: make fake star")
 
-def switch_main(option):
-	switcher = {
-		0: set_location,
-		1: go_to_location,
-		2: track,
-		3: get_status,
-		4: set_track_refresh_interval,
-		5: set_microstepping,
-		6: set_speed,
-		7: get_location,
-		8: manual_drive,
-		9: quit_nicely,
-		10: recover_last_location,
-		11: set_observer,
-		12: get_observer,
-		13: scan_sky,
-		14: make_fake_star,
-		15: print_named_stars,
-		16: print_available_stars
-	}
-	func = switcher.get(option, show_options)
-	func()
-
-def switch_main2(option):	
+def switch_main(option):	
 	switcher = {
 		0: quit_nicely,
 		
@@ -1161,17 +1118,17 @@ def switch_main2(option):
 		
 		31: make_fake_star
 	}
-	func = switcher.get(option, show_options2)
+	func = switcher.get(option, show_options)
 	func()
 
 ################
 
-show_options2()
+show_options()
 option = int(input("what is my purpose? "))
 while option != 0:
-	switch_main2(option)
+	switch_main(option)
 	
-	show_options2()
+	show_options()
 	option = int(input("what is my purpose? "))
 
 
