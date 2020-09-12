@@ -229,7 +229,7 @@ def gather_landmarks(landmarks_file):
 		elements = str(line).split(sep=';') 
 		if len(elements) != 3: continue # not a valid observer; try next line
 		
-		landmark = { "name" = elements[0], "Az" = float(elements[1]), "Alt" = float(elements[2]) }
+		landmark = { "name": elements[0], "Az": float(elements[1]), "Alt": float(elements[2]) }
 		
 		landmarks.append( landmark )
 	
