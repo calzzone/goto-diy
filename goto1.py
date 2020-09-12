@@ -6,8 +6,7 @@ from getkey import getkey, keys
 from datetime import datetime
 
 import os
-
-print (os.path.abspath(os.getcwd()))
+#print (os.path.abspath(os.getcwd()))
 
 import signal
 import sys
@@ -114,7 +113,7 @@ azimuth = 0.0
 same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
 same_str = "" # print-ready version of same (only when same is a body)
 
-last_location_file = "home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
+last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
 
 
 ################## ephem
@@ -206,8 +205,8 @@ def get_observer():
 ###### available named bodies
 
 # named stars built into ephem
-list_of_stars = open("ephem_stars.txt", "r").readlines()
-list_of_stars = [star[:-1].lower() for star in list_of_stars]
+list_of_ephem_stars = open("ephem_stars.txt", "r").readlines()
+list_of_ephem_stars = [star[:-1].lower() for star in list_of_ephem_stars]
 
 # named stars from YBS
 list_of_named_stars = open("named_stars.txt", "r").readlines()
@@ -363,7 +362,7 @@ def search_0(target):
 		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
-	elif target.lower() in list_of_stars:
+	elif target.lower() in list_of_ephem_stars:
 		thing = ephem.star(string.capwords(target))
 	elif target.lower().strip() in list_of_stars_YBS:
 		YBS2 = read_database("YBS2.edb")
@@ -384,7 +383,8 @@ def search():
 	global same_str
 	
 	print("List of available stars:")
-	print(list_of_named_stars) # TODO: print more
+	for star in list_of_named_stars: print (star + " ")
+	#print(list_of_named_stars) # TODO: print more
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
