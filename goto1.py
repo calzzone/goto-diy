@@ -384,7 +384,7 @@ def search():
 	global same_str
 	
 	print("List of available stars:")
-	print(list_of_named_starsstars) # TODO: print more
+	print(list_of_named_stars) # TODO: print more
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
