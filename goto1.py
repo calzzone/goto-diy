@@ -1167,12 +1167,12 @@ def switch_main2(option):
 ################
 
 show_options2()
-option = int(input("what is my purpose?"))
-while option != 90:
+option = int(input("what is my purpose? "))
+while option != 0:
 	switch_main2(option)
 	
 	show_options2()
-	option = int(input("what is my purpose?"))
+	option = int(input("what is my purpose? "))
 
 
 #GPIO.cleanup()
