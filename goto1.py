@@ -1102,6 +1102,16 @@ def show_options():
 	print ("15. print named stars")
 	print ("16. print all avalilabe stars (YBS)")
 	
+	
+def show_options2():
+	print ("\nAvailable options:")
+	print ("0: quit_nicely")
+	print ("1-4: track, move, manual drive, scan")	
+	print ("5-9: set speed, microstepping, track refresh interval, observer, current location")
+	print ("10: recover last location")
+	print ("18 19 20: get observer, current location, status")
+	print ("21, 22: print named stars, all available stars (YBS)")
+	print ("31: make fake star")
 
 def switch_main(option):
 	switcher = {
@@ -1126,14 +1136,42 @@ def switch_main(option):
 	func = switcher.get(option, show_options)
 	func()
 
+def switch_main2(option):	
+	switcher = {
+		0: quit_nicely,
+		
+		1: track,
+		2: go_to_location,
+		3: manual_drive,
+		4: scan_sky,
+		
+		5: set_speed,
+		6: set_microstepping,
+		7: set_track_refresh_interval,
+		8: set_observer,
+		9: set_location,
+		10: recover_last_location,
+		
+		18: get_observer,
+		19: get_location,
+		20: get_status,
+		
+		21: print_named_stars,
+		22: print_available_stars,
+		
+		31: make_fake_star
+	}
+	func = switcher.get(option, show_options2)
+	func()
+
 ################
 
-show_options()
+show_options2()
 option = int(input("what is my purpose?"))
-while option != 9:
-	switch_main(option)
+while option != 90:
+	switch_main2(option)
 	
-	show_options()
+	show_options2()
 	option = int(input("what is my purpose?"))
 
 
