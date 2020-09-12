@@ -1,6 +1,0 @@
-Floare bloc sud: Az 128.411 Alt 14.684
-Colt gard mansarda bloc sud: Az 138.671 Alt  10.094
-Colt burlan stanga bloc SV: Az 153.296 Alt 12.074
-Antena bloc SV: Az 164.186 Alt 19.139
-Burlan sus stanga bloc sud: Az 172.286 Alt 42.539
-Colt burlan dreapta jos bloc sud: Az 248.696 Alt 38.534

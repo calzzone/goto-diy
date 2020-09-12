@@ -201,7 +201,43 @@ def get_observer():
 	print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) + 
 		   "Elevtion: " + str(observer.elevation) + "\n" +
 		   "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
+
+
+
+
+# Landmarks: the same format as observers
+# TODO: add more flexibility; maybe a folder with landmakrs, posibility to chose, correlate to observer locations
+
+landmarks_file = "balcon_sud.txt"
+
+# reads landmarks_file and returns a list of dictionaries (each is a landmarks wih name, Az, Alt)
+def gather_landmarks(landmarks_file):
 	
+	landmarks_lines = open(landmarks_file, "r").readlines()
+	landmarks = {}
+	
+	for line in landmarks_lines:
+		line = line.strip()
+	
+		# Skip comments
+		if line.startswith('#'): continue # try next line
+		
+		pound = line.find("#")
+		if pound >= 0: line = line[:pound] # remove comments at the end of the line
+		
+		# new landmark
+		elements = str(line).split(sep=';') 
+		if len(elements) != 3: continue # not a valid observer; try next line
+		
+		landmark = { "name" = elements[0], "Az" = float(elements[1]), "Alt" = float(elements[2]) }
+		
+		landmarks.append( landmark )
+	
+	return (landmarks)
+
+landmarks = gather_landmarks(landmarks_file)
+
+
 ###### available named bodies
 
 # named stars built into ephem
@@ -380,6 +416,10 @@ def search_0(target):
 		thing = YBS2[star][2]
 	elif target == "fake": # fake body, defined by az/alt
 		thing = fake_star
+	elif target[0] == '#' and target[1:].isnumeric() : # landmarks, defined by az/alt
+        #landmarks = gather_landmarks(landmarks_file)
+		landmark = int(target[1:].strip())
+		return( landmarks[landmark]["Az"], landmarks[landmark]["Alt"] )
 	else: return(None)
 
 	if thing is None: return (None)
@@ -403,7 +443,7 @@ def search():
 			continue
         
 		if location == "same": location = same
-		if location == "home": location = "0 0"
+		elif location == "home": location = "0 0"
 		elif location == 'c': return(None, None)
 		temp = location
 		
