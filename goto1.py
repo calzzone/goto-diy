@@ -243,7 +243,7 @@ def print_landmarks():
 	#print(landmakrs)
 	
 	i = 0
-	for landmark in landmarks: landmakrs
+	for landmark in landmarks: 
 		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
 		i += 1
 
@@ -611,8 +611,8 @@ ramp_az_max_speed_factor = 5 # ramp up until 4 times faster than base speed
 ramp_alt_max_speed_factor = 5
 
 # not called directly by the user
-def move(amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
-		amount_alt = 0.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
+def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az = 2, 
+		amount_alt = 0.0, direction_alt = "up", speed_alt = 10.0, min_steps_alt = 2, 
 		update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
 	
@@ -752,28 +752,27 @@ def left_1_step(update_position = True):
 
 
 ################## move 1 degree
-# TODO use move()
 
 def up_1(update_position = True):
 	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
-		amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
+		amount_alt = 1.0, direction_alt = "up", speed_alt = SPEED_ALT, min_steps_alt = 0, 
 		update_position = update_position)
 
 def down_1(update_position = True):	
 	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
-		amount_alt = 1.0, direction_alt = "down", speed_alt = 1.0, min_steps_alt = 2, 
+		amount_alt = 1.0, direction_alt = "down", speed_alt = SPEED_ALT, min_steps_alt = 0, 
 		update_position = update_position)
 
 
 
 def right_1(update_position = True):
-	move(amount_az = 1.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
+	move(amount_az = 1.0, direction_az = "right", speed_az = SPEED_AZ, min_steps_az = 0, 
 		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
 		update_position = update_position)
 
 
 def left_1(update_position = True):
-	move(amount_az = 1.0, direction_az = "left", speed_az = 1.0, min_steps_az = 4, 
+	move(amount_az = 1.0, direction_az = "left", speed_az = SPEED_AZ, min_steps_az = 0, 
 		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
 		update_position = update_position)
 
