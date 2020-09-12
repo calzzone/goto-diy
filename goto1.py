@@ -216,6 +216,15 @@ list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
 list_of_stars_YBS = open("YBS2.txt", "r").readlines()
 list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
+
+def print_named_stars():	
+	print("List of available named stars:")
+	print(", ".join(list_of_named_stars))
+	
+def print_available_stars():	
+	print("List of all available stars:")
+	print(", ".join(list_of_stars_YBS))
+
 # there is a way to infer what kind of celestial body is one
 def describe_body( subfields ):
 	# Map the edb format type-subfield codes to presentable text
@@ -382,13 +391,17 @@ def search():
 	global same # TODO: the error!
 	global same_str
 	
-	print("List of available stars:")
-	for star in list_of_named_stars: print (star + " ")
-	#print(list_of_named_stars) # TODO: print more
-	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
+		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
+		if location == "named": 
+			print_named_stars()
+			continue
+        if location == "all": 
+			print_available_stars()
+			continue
+        
 		if location == "same": location = same
 		if location == "home": location = "0 0"
 		elif location == 'c': return(None, None)
@@ -579,6 +592,7 @@ def left_1_step(update_position = True):
 
 
 ################## move 1 degree
+# TODO use move()
 
 def up_1(update_position = True):
 	step_count_alt = int(round(1 * SPR_ALT / 360.0))
@@ -957,7 +971,15 @@ def track():
 	found = False
 	while not found:
 		same_str_builder = ": " + same_str if same_str != "" else ""
+		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'")
 		location = input("Location (common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
+		
+		if location == "named": 
+			print_named_stars()
+			continue
+        if location == "all": 
+			print_available_stars()
+			continue
 		
 		if location == 'c': return ()	
 	
@@ -1077,6 +1099,9 @@ def show_options():
 	print ("12. get observer location")
 	print ("13. scan area")
 	print ("14. define fake star")
+	print ("15. print named stars")
+	print ("16. print all avalilabe stars (YBS)")
+	
 
 def switch_main(option):
 	switcher = {
@@ -1094,7 +1119,9 @@ def switch_main(option):
 		11: set_observer,
 		12: get_observer,
 		13: scan_sky,
-		13: make_fake_star
+		14: make_fake_star,
+		15: print_named_stars
+		16: print_available_stars
 	}
 	func = switcher.get(option, show_options)
 	func()
