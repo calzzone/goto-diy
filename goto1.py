@@ -398,7 +398,7 @@ def search():
 		if location == "named": 
 			print_named_stars()
 			continue
-        if location == "all": 
+		if location == "all": 
 			print_available_stars()
 			continue
         
@@ -977,7 +977,7 @@ def track():
 		if location == "named": 
 			print_named_stars()
 			continue
-        if location == "all": 
+		if location == "all": 
 			print_available_stars()
 			continue
 		
