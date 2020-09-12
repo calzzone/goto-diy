@@ -208,13 +208,13 @@ def get_observer():
 # Landmarks: the same format as observers
 # TODO: add more flexibility; maybe a folder with landmakrs, posibility to chose, correlate to observer locations
 
-landmarks_file = "balcon_sud.txt"
+landmarks_file = "balcon_sud.landmakrs"
 
 # reads landmarks_file and returns a list of dictionaries (each is a landmarks wih name, Az, Alt)
 def gather_landmarks(landmarks_file):
 	
 	landmarks_lines = open(landmarks_file, "r").readlines()
-	landmarks = {}
+	landmarks = []
 	
 	for line in landmarks_lines:
 		line = line.strip()
@@ -237,6 +237,10 @@ def gather_landmarks(landmarks_file):
 
 landmarks = gather_landmarks(landmarks_file)
 
+
+def print_landmarks():
+	print ("Current landmarks file: " + landmarks_file + ":")
+	print(landmakrs
 
 ###### available named bodies
 
@@ -418,7 +422,7 @@ def search_0(target):
 		thing = fake_star
 	elif target[0] == '#' and target[1:].isnumeric() : # landmarks, defined by az/alt
         #landmarks = gather_landmarks(landmarks_file)
-		landmark = int(target[1:].strip())
+		landmark = int(target[1:].strip())-1
 		return( landmarks[landmark]["Az"], landmarks[landmark]["Alt"] )
 	else: return(None)
 
@@ -433,13 +437,16 @@ def search():
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
-		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'")
+		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'; To list landmakrs type 'landmarks'.")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 		if location == "named": 
 			print_named_stars()
 			continue
 		if location == "all": 
 			print_available_stars()
+			continue
+		if location == "landmakrs": 
+			print_landmarks()
 			continue
         
 		if location == "same": location = same
@@ -1164,7 +1171,7 @@ def show_options():
 	print ("5-9: set speed, microstepping, track refresh interval, observer, current location")
 	print ("10: recover last location")
 	print ("18 19 20: get observer, current location, status")
-	print ("21, 22: print named stars, all available stars (YBS)")
+	print ("21, 22, 23: print named stars, all available stars (YBS), landmakrs")
 	print ("31: make fake star")
 
 def switch_main(option):	
@@ -1189,6 +1196,7 @@ def switch_main(option):
 		
 		21: print_named_stars,
 		22: print_available_stars,
+		23: print_landmarks,
 		
 		31: make_fake_star
 	}
