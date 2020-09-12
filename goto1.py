@@ -240,7 +240,12 @@ landmarks = gather_landmarks(landmarks_file)
 
 def print_landmarks():
 	print ("Current landmarks file: " + landmarks_file + ":")
-	print(landmakrs
+	#print(landmakrs)
+	
+	i = 0
+	for landmark in landmarks: landmakrs
+        print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
+        i += 1
 
 ###### available named bodies
 
@@ -437,7 +442,7 @@ def search():
 	
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
-		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'; To list landmakrs type 'landmarks'.")
+		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 		if location == "named": 
 			print_named_stars()
@@ -445,7 +450,7 @@ def search():
 		if location == "all": 
 			print_available_stars()
 			continue
-		if location == "landmakrs": 
+		if location == "landmakrs":
 			print_landmarks()
 			continue
         
@@ -1052,7 +1057,7 @@ def track():
 	found = False
 	while not found:
 		same_str_builder = ": " + same_str if same_str != "" else ""
-		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'")
+		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
 		location = input("Location (common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 		
 		if location == "named": 
@@ -1060,6 +1065,9 @@ def track():
 			continue
 		if location == "all": 
 			print_available_stars()
+			continue
+		if location == "landmakrs": 
+			print_landmarks()
 			continue
 		
 		if location == 'c': return ()	
