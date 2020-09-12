@@ -114,7 +114,7 @@ azimuth = 0.0
 same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
 same_str = "" # print-ready version of same (only when same is a body)
 
-last_location_file = "~/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
+last_location_file = "home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
 
 
 ################## ephem
