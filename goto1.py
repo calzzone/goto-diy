@@ -1120,7 +1120,7 @@ def switch_main(option):
 		12: get_observer,
 		13: scan_sky,
 		14: make_fake_star,
-		15: print_named_stars
+		15: print_named_stars,
 		16: print_available_stars
 	}
 	func = switcher.get(option, show_options)
