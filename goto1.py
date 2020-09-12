@@ -244,8 +244,8 @@ def print_landmarks():
 	
 	i = 0
 	for landmark in landmarks: landmakrs
-        print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
-        i += 1
+		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
+		i += 1
 
 ###### available named bodies
 
