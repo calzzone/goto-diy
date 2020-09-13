@@ -299,7 +299,10 @@ def switch_main(option):
 
 ################
 
+print("before main")
+
 def main():
+	print("main")
 	recover_last_location()
 	show_options()
 	option = int(input("what is my purpose? "))

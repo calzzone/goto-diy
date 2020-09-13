@@ -67,6 +67,7 @@ def set_track_refresh_interval():
 # one could reterive back the information and restart at the last kown location
 
 def recover_last_location():
+	global last_location_file
 	with open(last_location_file) as f:
 		# Look at each line of the file
 		for line in f:
@@ -98,6 +99,7 @@ def recover_last_location():
 
 
 def save_location():
+	global last_location_file
 	with open(last_location_file, "w") as f:
 		line = str(azimuth) + ";" + str(altitude) + ";" + same + ";" + str(datetime.utcnow()) + "\n"
 		f.write(line)
