@@ -26,88 +26,7 @@ from ephem import *
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-# DRV8825 has 3 pins to control microstepping (full to 1/32).
-# There are better drivers out there. The issue is the unequal step size.
-MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
-			  '1/2': (1, 0, 0),
-			  '1/4': (0, 1, 0),
-			  '1/8': (1, 1, 0),
-			  '1/16': (0, 0, 1),
-			  '1/32': (1, 0, 1)}
-
-# This is to update steps / revolution when changing microstepping
-MICROSTEP_FACTOR = { 'Full': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32 }
-
-track_refresh_interval = 20.0
-
-
-
-##### ALtitude control
-
-DIR_ALT = 16   # Direction GPIO Pin
-STEP_ALT = 20  # Step GPIO Pin
-
-CW_ALT = 1	 # Clockwise Rotation
-CCW_ALT = 0	# Counterclockwise Rotation
-
-GPIO.setup(DIR_ALT, GPIO.OUT)
-GPIO.setup(STEP_ALT, GPIO.OUT)
-GPIO.output(DIR_ALT, CW_ALT)
-
-microstep_alt = '1/16'
-SPR_BASE_ALT = 200*(180/36)   # Steps per Revolution (360 / 1.8)
-SPR_ALT = SPR_BASE_ALT * MICROSTEP_FACTOR[ microstep_alt ]
-
-MODE_ALT = (14, 15, 18)   # Microstep Resolution GPIO Pins
-GPIO.setup(MODE_ALT, GPIO.OUT)
-GPIO.output(MODE_ALT, MICROSTEP_RESOLUTION[ microstep_alt ])
-print ("Step size (Alt): " + str( 360.0 / SPR_ALT ) + " degrees. Microstepping: " + microstep_alt + " .")
-
-#DURATION_ALT = 60.0
-SPEED_ALT = 10.0 # deg / second
-
-delay_ALT = 360.0 / (SPEED_ALT * SPR_ALT * 2.0)
-print ("Time to complete 360 deg rotation (Alt): " +  str(360.0/SPEED_ALT) + " seconds.")
-print ("Delay (Alt): " + str(delay_ALT) + " seconds.\n")
-#delay_ALT = 0.005
-
-ALT = 0.0
-#altitude = ALT * (SPR_ALT/4.0 ) / 90.0
-altitude = 0.0
-
-
-
-##### Azimuth control
-
-DIR_AZ = 19 # Direction GPIO Pin
-STEP_AZ = 26 # Step GPIO Pin
-CW_AZ = 1 # Clockwise Rotation
-CCW_AZ = 0 # Counterclockwise Rotation
-
-GPIO.setup(DIR_AZ, GPIO.OUT)
-GPIO.setup(STEP_AZ, GPIO.OUT)
-GPIO.output(DIR_AZ, CW_AZ)
-
-microstep_az = '1/4'
-SPR_BASE_AZ = 200*(360/36) # Steps per Revolution (360 / 1.8)
-SPR_AZ = SPR_BASE_AZ * MICROSTEP_FACTOR[ microstep_az ]
-
-MODE_AZ = (23, 24, 25) # Microstep Resolution GPIO Pins
-GPIO.setup(MODE_AZ, GPIO.OUT)
-GPIO.output(MODE_AZ, MICROSTEP_RESOLUTION[ microstep_az ])
-print ("Step size (Az): " + str( 360.0 / SPR_AZ ) + " degrees. Microstepping: " + microstep_az + " .")
-
-SPEED_AZ = 10.0 # deg / second
-
-delay_AZ = 360.0 / (SPEED_AZ * SPR_AZ * 2.0)
-print ("Time to complete 360 deg rotation (Az): " +  str(360.0/SPEED_AZ) + " seconds.")
-print ("Delay (Az): " + str(delay_AZ) + " seconds.\n")
-#delay_AZ = 0.005
-
-AZ = 0.0
-#azimuth = AZ * (SPR_AZ/4.0 ) / 90.0
-azimuth = 0.0
-
+from load_settings import *
 
 
 
@@ -119,136 +38,11 @@ same_str = "" # print-ready version of same (only when same is a body)
 last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
 
 
-################## ephem
-
-##### observers (observing location on the earth)
-# ephem knows a list of cities, but it's too small.
-# TODO: use some online thing to get gps coordinates, elevation and even pressure and temperature
-
-observers_file = "observers.txt"
-
-# reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
-def gather_observers():
-
-	observers_lines = open(observers_file, "r").readlines()
-	observers = {}
-
-	for line in observers_lines:
-		line = line.strip()
-
-		# Skip comments
-		if line.startswith('#'): continue # try next line
-
-		pound = line.find("#")
-		if pound >= 0: line = line[:pound] # remove comments at the end of the line
-
-		# new observer
-		elements = str(line).split(sep=';')
-		if len(elements) < 3: continue # not a valid observer; try next line
-
-		observer = ephem.Observer()
-		observer.lat, observer.lon = elements[1], elements[2]
-
-		if len(elements) >= 3:
-			observer.elevation = float(elements[3])
-
-		if len(elements) >= 4:
-			observer.pressure, observer.temp = float(elements[4]), float(elements[5])
-		else:
-			observer.pressure, observer.temp = 1013, 15# Stellarium settings
-
-		observers[elements[0]] = observer
-
-	return (observers)
-
-observers = gather_observers()
-
-def set_observer(new_observer = None):
-	with_arg = True if new_observer is None else False
-	while True:
-		if with_arg: # if new_observer is None:
-			print ("Currently available obsever locations as defined in " + observers_file + ": " + ", ".join(observers.keys()) + ". ")
-			new_observer = input("Type the name of the observer location or 'c' to cancel: ")
-
-		if new_observer == "c": return ()
-		elif new_observer in observers.keys():
-			#observer = observers
-			if with_arg:
-				global observer
-				global observer_name
-				observer, observer_name = observers[new_observer], new_observer
-			return (observers[new_observer], new_observer)
+from load_observers import *
+from load_landmarks import *
 
 
 
-observer_name = "cluj"
-observer, observer_name = set_observer(observer_name)
-
-
-#marisel = ephem.Observer()
-#marisel.lat, marisel.lon = '46.680821', '23.152553'
-#marisel.elevation = 1050
-#marisel.pressure, marisel.temp = 1013, 15 # stellarium settings
-
-#cluj = ephem.Observer()
-#cluj.lat, cluj.lon = '46.7424895', '23.5650096'
-#cluj.elevation = 850
-#cluj.pressure, cluj.temp = 1013, 15 # stellarium settings
-##cluj.horizon="0:34"
-##cluj.date = '2020/7/17 12:52'
-#
-#observer = cluj
-
-def get_observer():
-	print ("Current observing location: " + observer_name + ":")
-	print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) +
-		   "Elevtion: " + str(observer.elevation) + "\n" +
-		   "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
-
-
-
-
-# Landmarks: the same format as observers
-# TODO: add more flexibility; maybe a folder with landmakrs, posibility to chose, correlate to observer locations
-
-landmarks_file = "balcon_sud.landmakrs"
-
-# reads landmarks_file and returns a list of dictionaries (each is a landmarks wih name, Az, Alt)
-def gather_landmarks(landmarks_file):
-
-	landmarks_lines = open(landmarks_file, "r").readlines()
-	landmarks = []
-
-	for line in landmarks_lines:
-		line = line.strip()
-
-		# Skip comments
-		if line.startswith('#'): continue # try next line
-
-		pound = line.find("#")
-		if pound >= 0: line = line[:pound] # remove comments at the end of the line
-
-		# new landmark
-		elements = str(line).split(sep=';')
-		if len(elements) != 3: continue # not a valid observer; try next line
-
-		landmark = { "name": elements[0], "Az": float(elements[1]), "Alt": float(elements[2]) }
-
-		landmarks.append( landmark )
-
-	return (landmarks)
-
-landmarks = gather_landmarks(landmarks_file)
-
-
-def print_landmarks():
-	print ("Current landmarks file: " + landmarks_file + ":")
-	#print(landmakrs)
-
-	i = 0
-	for landmark in landmarks:
-		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
-		i += 1
 
 ###### available named bodies
 
@@ -1172,17 +966,18 @@ def get_status():
 
 def quit_nicely():
 	GPIO.cleanup()
+	print ("good riddance!")
 
 
 def show_options():
 	print ("\nAvailable options:")
-	print ("0: quit_nicely")
-	print ("1-4: track, move, manual drive, scan")
-	print ("5-9: set speed, microstepping, track refresh interval, observer, current location")
-	print ("10: recover last location")
-	print ("18 19 20: get observer, current location, status")
-	print ("21, 22, 23: print named stars, all available stars (YBS), landmakrs")
-	print ("31: make fake star")
+	print ("0: Quit nicely")
+	print ("1-4: Operating modes: track (1), move (2), manual drive (3) , scan sky area (4)")
+	print ("5-9: Set: speed (5), microstepping (6), track refresh interval (7), observer (8), current coordinates (9)")
+	print ("10: Recover last recoded coordinates")
+	print ("18 19 20: Print: observer (18), current coordinates (19), status (20)")
+	print ("21-23: Print: named stars (21), all available stars in YBS (22), landmakrs (23)")
+	print ("31: Make fake star")
 
 def switch_main(option):
 	switcher = {
@@ -1200,7 +995,7 @@ def switch_main(option):
 		9: set_location,
 		10: recover_last_location,
 
-		18: get_observer,
+		18: print_observer,
 		19: get_location,
 		20: get_status,
 
@@ -1215,16 +1010,23 @@ def switch_main(option):
 
 ################
 
-show_options()
-option = int(input("what is my purpose? "))
-while option != 0:
-	switch_main(option)
-
+def main():
 	show_options()
 	option = int(input("what is my purpose? "))
+	while option != 0:
+		switch_main(option)
+
+		show_options()
+		option = int(input("what is my purpose? "))
+
+	#GPIO.cleanup()
+	quit_nicely()
+
+if __name__ == '__main__':
+	main()
+
+
 
 
 #GPIO.cleanup()
 quit_nicely()
-
-print ("good riddance!")
