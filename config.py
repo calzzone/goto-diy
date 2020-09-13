@@ -81,3 +81,15 @@ delay_ALT = 360.0 / (SPEED_ALT * SPR_ALT * 2.0)
 #delay_ALT = 0.005 # failsafe value
 
 altitude = 0.0
+
+
+
+################## other parameters
+
+same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
+same_str = "" # print-ready version of same (only when same is a body)
+
+
+
+# When in tracking mode, update every x seconds
+track_refresh_interval = 20

@@ -26,19 +26,11 @@ from ephem import *
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-from load_settings import *
+from config import *
 
 
 
-################## other parameters
 
-same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
-same_str = "" # print-ready version of same (only when same is a body)
-
-
-
-# When in tracking mode, update every x seconds
-track_refresh_interval = 20
 
 
 from load_observers import *
