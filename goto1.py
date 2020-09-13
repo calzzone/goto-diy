@@ -39,7 +39,7 @@ from backup_location import *
 from ephem_wrapper import *
 
 from set_functions import *
-from move_function.py import *
+from move_function import *
 from move_1_step import *
 from move_1_deg import *
 from manual_drive_mode import *
