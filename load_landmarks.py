@@ -37,5 +37,8 @@ def print_landmarks():
 
 #####
 
+print("this should run!")
+print(landmarks_file)
+
 #landmarks_file = "balcon_sud.landmakrs"
 landmarks = gather_landmarks(landmarks_file)
