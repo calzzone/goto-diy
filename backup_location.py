@@ -25,6 +25,11 @@ last_location_file = "/home/pi/last_location_file.txt"
 # whenever the current location changes, update a file just in case.
 # one could reterive back the information and restart at the last kown location
 
+def save_location():
+	with open(last_location_file, "w") as f:
+		line = str(azimuth) + ";" + str(altitude) + ";" + same + ";" + str(datetime.utcnow()) + "\n"
+		f.write(line)
+
 def recover_last_location():
 	with open(last_location_file) as f:
 		# Look at each line of the file
@@ -54,9 +59,3 @@ def recover_last_location():
 		if elements[2] != "":
 			same = elements[2]
 			print ("Recovered last successfull searched location: " + same + ".")
-
-
-def save_location():
-	with open(last_location_file, "w") as f:
-		line = str(azimuth) + ";" + str(altitude) + ";" + same + ";" + str(datetime.utcnow()) + "\n"
-		f.write(line)
