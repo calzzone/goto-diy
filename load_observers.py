@@ -2,11 +2,12 @@
 ##### observers (observing location on the earth)
 # ephem knows a list of cities, but it's too small.
 # TODO: use some online thing to get gps coordinates, elevation and even pressure and temperature
-import string
-import ephem
-from ephem import *
 
-# reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
+#import string
+import ephem
+#from ephem import *
+
+# Reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
 def gather_observers(observers_file):
 
 	observers_lines = open(observers_file, "r").readlines()
