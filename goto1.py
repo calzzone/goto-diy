@@ -37,6 +37,9 @@ same_str = "" # print-ready version of same (only when same is a body)
 
 last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
 
+# When in tracking mode, update every x seconds
+track_refresh_interval = 20
+
 
 from load_observers import *
 from load_landmarks import *
