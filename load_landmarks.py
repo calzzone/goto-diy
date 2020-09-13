@@ -38,7 +38,7 @@ def print_landmarks():
 #####
 
 print("this should run!")
-from config import landmarks_file
+from config import * # global variables
 print(config.landmarks_file)
 
 #landmarks_file = "balcon_sud.landmakrs"
