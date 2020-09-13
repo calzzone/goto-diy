@@ -60,3 +60,19 @@ def set_microstepping():
 def set_track_refresh_interval():
 	global track_refresh_interval
 	track_refresh_interval = float(input("Tracking refresh interval (seconds): "))
+
+################## set curent location
+
+def set_location():
+	global azimuth
+	global altitude
+
+	#azimuth, altitude = map(float, input("Current Az Alt: ").split())
+	new_azimuth, new_altitude = search()
+	if (new_azimuth == None or new_altitude == None):
+		return()
+
+	azimuth  = new_azimuth % 360.0
+	altitude = new_altitude  % 360.0
+
+	save_location()

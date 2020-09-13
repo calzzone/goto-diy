@@ -35,8 +35,8 @@ from load_settings import *
 same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
 same_str = "" # print-ready version of same (only when same is a body)
 
-last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
-print(last_location_file)
+
+
 # When in tracking mode, update every x seconds
 track_refresh_interval = 20
 
@@ -47,7 +47,7 @@ from backup_location import *
 from ephem_wrapper import *
 
 from set_functions import *
-from move_to_mode import *
+from move import *
 from move_1_step import *
 from move_1_deg import *
 from manual_drive_mode import *

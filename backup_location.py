@@ -19,11 +19,13 @@ from ephem import *
 
 ################## backup location
 
+# keep a record of the last known location (coordinates, body, time)
+last_location_file = "/home/pi/last_location_file.txt"
+
 # whenever the current location changes, update a file just in case.
 # one could reterive back the information and restart at the last kown location
-last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
+
 def recover_last_location():
-	global last_location_file
 	with open(last_location_file) as f:
 		# Look at each line of the file
 		for line in f:
@@ -55,24 +57,6 @@ def recover_last_location():
 
 
 def save_location():
-	global last_location_file
 	with open(last_location_file, "w") as f:
 		line = str(azimuth) + ";" + str(altitude) + ";" + same + ";" + str(datetime.utcnow()) + "\n"
 		f.write(line)
-
-
-################## set curent location
-
-def set_location():
-	global azimuth
-	global altitude
-
-	#azimuth, altitude = map(float, input("Current Az Alt: ").split())
-	new_azimuth, new_altitude = search()
-	if (new_azimuth == None or new_altitude == None):
-		return()
-
-	azimuth  = new_azimuth % 360.0
-	altitude = new_altitude  % 360.0
-
-	save_location()
