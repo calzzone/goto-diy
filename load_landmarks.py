@@ -37,9 +37,10 @@ def print_landmarks():
 
 #####
 
-print("this should run!")
-from config import * # global variables
-print(config.landmarks_file)
+def test1():
+	global landmarks_file
+	print (landmarks_file)
 
 #landmarks_file = "balcon_sud.landmakrs"
-landmarks = gather_landmarks(landmarks_file)
+#landmarks = gather_landmarks(landmarks_file)
+test1()
