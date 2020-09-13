@@ -102,7 +102,7 @@ fake_star = None # initialize with a proper value in ephem_wrapper.py
 
 observers_file = "observers.txt"
 observer_name = "cluj" # default observer; has to be present in observers_file
-#observers, observer = None, None
+observers, observer = None, None
 
 landmarks_file = "balcon_sud.landmakrs"
 landmarks = []
