@@ -1,3 +1,6 @@
+### This is the main code file f my telescope control software.
+
+
 # https://git.nexlab.net/astronomy/skylived/tree/bd59190026d9d95b39983f8a0106a7e17023aee8/DecraDB/xephemdb
 # https://github.com/Alex-Broughton/StarAtlas
 
@@ -23,7 +26,7 @@ from ephem import *
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-# DRV8825 has 3 pins to control microstepping (full to 1/32). 
+# DRV8825 has 3 pins to control microstepping (full to 1/32).
 # There are better drivers out there. The issue is the unequal step size.
 MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
 			  '1/2': (1, 0, 0),
@@ -47,7 +50,7 @@ STEP_ALT = 20  # Step GPIO Pin
 CW_ALT = 1	 # Clockwise Rotation
 CCW_ALT = 0	# Counterclockwise Rotation
 
-GPIO.setup(DIR_ALT, GPIO.OUT) 
+GPIO.setup(DIR_ALT, GPIO.OUT)
 GPIO.setup(STEP_ALT, GPIO.OUT)
 GPIO.output(DIR_ALT, CW_ALT)
 
@@ -81,7 +84,7 @@ STEP_AZ = 26 # Step GPIO Pin
 CW_AZ = 1 # Clockwise Rotation
 CCW_AZ = 0 # Counterclockwise Rotation
 
-GPIO.setup(DIR_AZ, GPIO.OUT) 
+GPIO.setup(DIR_AZ, GPIO.OUT)
 GPIO.setup(STEP_AZ, GPIO.OUT)
 GPIO.output(DIR_AZ, CW_AZ)
 
@@ -126,36 +129,36 @@ observers_file = "observers.txt"
 
 # reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
 def gather_observers():
-	
+
 	observers_lines = open(observers_file, "r").readlines()
 	observers = {}
-	
+
 	for line in observers_lines:
 		line = line.strip()
-	
+
 		# Skip comments
 		if line.startswith('#'): continue # try next line
-		
+
 		pound = line.find("#")
 		if pound >= 0: line = line[:pound] # remove comments at the end of the line
-		
+
 		# new observer
-		elements = str(line).split(sep=';') 
+		elements = str(line).split(sep=';')
 		if len(elements) < 3: continue # not a valid observer; try next line
-		
+
 		observer = ephem.Observer()
 		observer.lat, observer.lon = elements[1], elements[2]
-		
+
 		if len(elements) >= 3:
 			observer.elevation = float(elements[3])
-		
+
 		if len(elements) >= 4:
 			observer.pressure, observer.temp = float(elements[4]), float(elements[5])
-		else: 
+		else:
 			observer.pressure, observer.temp = 1013, 15# Stellarium settings
-		
+
 		observers[elements[0]] = observer
-	
+
 	return (observers)
 
 observers = gather_observers()
@@ -166,7 +169,7 @@ def set_observer(new_observer = None):
 		if with_arg: # if new_observer is None:
 			print ("Currently available obsever locations as defined in " + observers_file + ": " + ", ".join(observers.keys()) + ". ")
 			new_observer = input("Type the name of the observer location or 'c' to cancel: ")
-		
+
 		if new_observer == "c": return ()
 		elif new_observer in observers.keys():
 			#observer = observers
@@ -198,7 +201,7 @@ observer, observer_name = set_observer(observer_name)
 
 def get_observer():
 	print ("Current observing location: " + observer_name + ":")
-	print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) + 
+	print ("Lat: " + str(observer.lat) + "Lon: " + str(observer.lon) +
 		   "Elevtion: " + str(observer.elevation) + "\n" +
 		   "Pressure: " + str(observer.pressure) + "Temp: " + str(observer.temp) )
 
@@ -212,27 +215,27 @@ landmarks_file = "balcon_sud.landmakrs"
 
 # reads landmarks_file and returns a list of dictionaries (each is a landmarks wih name, Az, Alt)
 def gather_landmarks(landmarks_file):
-	
+
 	landmarks_lines = open(landmarks_file, "r").readlines()
 	landmarks = []
-	
+
 	for line in landmarks_lines:
 		line = line.strip()
-	
+
 		# Skip comments
 		if line.startswith('#'): continue # try next line
-		
+
 		pound = line.find("#")
 		if pound >= 0: line = line[:pound] # remove comments at the end of the line
-		
+
 		# new landmark
-		elements = str(line).split(sep=';') 
+		elements = str(line).split(sep=';')
 		if len(elements) != 3: continue # not a valid observer; try next line
-		
+
 		landmark = { "name": elements[0], "Az": float(elements[1]), "Alt": float(elements[2]) }
-		
+
 		landmarks.append( landmark )
-	
+
 	return (landmarks)
 
 landmarks = gather_landmarks(landmarks_file)
@@ -241,9 +244,9 @@ landmarks = gather_landmarks(landmarks_file)
 def print_landmarks():
 	print ("Current landmarks file: " + landmarks_file + ":")
 	#print(landmakrs)
-	
+
 	i = 0
-	for landmark in landmarks: 
+	for landmark in landmarks:
 		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
 		i += 1
 
@@ -262,11 +265,11 @@ list_of_stars_YBS = open("YBS2.txt", "r").readlines()
 list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
-def print_named_stars():	
+def print_named_stars():
 	print("List of available named stars:")
 	print(", ".join(list_of_named_stars))
-	
-def print_available_stars():	
+
+def print_available_stars():
 	print("List of all available stars:")
 	print(", ".join(list_of_stars_YBS))
 
@@ -279,7 +282,7 @@ def describe_body( subfields ):
 		return "satellite"
 	if subfields[0] in 'ehp':
 		return "planetoid"
-		
+
 	FIXED_BODY_MAP = {
 		'A' : "cluster of galaxies",
 		'B' : "binary star",
@@ -302,49 +305,49 @@ def describe_body( subfields ):
 		'U' : "nebulous cluster",
 		'V' : "variable star",
 		'Y' : "supernova",
-		"?" : "unknown / uspecified" }			
-		
+		"?" : "unknown / uspecified" }
+
 	if subfields[0] == 'f':
-		return FIXED_BODY_MAP[subfields[1]]  
-		
+		return FIXED_BODY_MAP[subfields[1]]
+
 	return "?"
 
 # reads an arbitrary edb file
 def read_database( filename ):
-	# Read a set of bodies from an EDB file. 
+	# Read a set of bodies from an EDB file.
 	bodies = []
-	desc = {}   
-	
+	desc = {}
+
 	# Read the file.
 	with open(filename) as f:
 		# Look at each line of the file
 		for line in f:
 			line=line.strip()
-		
+
 			# Skip comments
 			if line.startswith('#'):
-				continue	
-			
+				continue
+
 			# Skip malformed lines
 			if "," not in line:
-				continue			  
-			
+				continue
+
 			# describe body
 			#line = line.replace(",f,", ",f|?,") # temporary precausion to make describe_body() shut up; most are already done
 			# Split the line apart.
-			elements = line.split(",") 
+			elements = line.split(",")
 			# Extract the name
 			name = elements[0]
 			# Extract the type fields
-			subfields = elements[1].split('|') 
+			subfields = elements[1].split('|')
 			# Map those to a description
-			desc = describe_body(subfields)  
-			
+			desc = describe_body(subfields)
+
 			# Give the whole line to pyephem; # revent the previous "fix"
 			body = ephem.readdb(line.replace(",f|?,", ",f,"))
-			
+
 			bodies.append( (name, desc,body) )
-		
+
 	return bodies
 
 # wrapper around ephem.compute(); there is a more "pattern-y" way to do it but why bother...
@@ -355,8 +358,8 @@ def compute(thing, observer):
 	thing.compute(observer)
 	print("Angle Az Alt:", thing.az, thing.alt)
 	return(thing.az*180/math.pi, thing.alt*180/math.pi)
-	
-	#return(#ephem.degrees(thing.az), ephem.degrees(thing.alt), 
+
+	#return(#ephem.degrees(thing.az), ephem.degrees(thing.alt),
 	#	thing.az*180/math.pi, thing.alt*180/math.pi)
 
 
@@ -365,7 +368,7 @@ fake_star = ephem.FixedBody()
 def make_fake_star(az = None, alt = None):
 	if az is None or alt is None: # no args
 		az, alt = input("Define fake star by Az Alt: ").strip().split().map(float)
-	
+
 	global fake_star
 	fake_star = ephem.FixedBody()
 	fake_star._ra, fake_star._dec = observer.radec_of(az, alt)
@@ -404,15 +407,15 @@ def search_0(target):
 		messier = read_database("Messier.edb")
 		name = "M" + target[1:].strip()
 		thing = find_body_by_name(name, messier)
-	elif target.lower().startswith('ic'): 
+	elif target.lower().startswith('ic'):
 		ic = read_database("IC.edb")
 		name = "IC" + target[2:].strip()
 		thing = find_body_by_name(name, ic)
-	elif target.lower().startswith('ngc'): 
+	elif target.lower().startswith('ngc'):
 		ngc = read_database("NGC.edb")
 		name = "NGC" + target[3:].strip()
 		thing = find_body_by_name(name, ngc)
-	elif target.lower().startswith('ugc'): # also UGCA 
+	elif target.lower().startswith('ugc'): # also UGCA
 		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
@@ -432,33 +435,33 @@ def search_0(target):
 	else: return(None)
 
 	if thing is None: return (None)
-	
+
 	return(compute(thing, observer))
 
 # actual search function called from the UI
 def search():
 	global same # TODO: the error!
 	global same_str
-	
+
 	while True:
 		same_str_builder = ": " + same_str if same_str != "" else ""
 		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
-		if location == "named": 
+		if location == "named":
 			print_named_stars()
 			continue
-		if location == "all": 
+		if location == "all":
 			print_available_stars()
 			continue
 		if location == "landmakrs":
 			print_landmarks()
 			continue
-        
+
 		if location == "same": location = same
 		elif location == "home": location = "0 0"
 		elif location == 'c': return(None, None)
 		temp = location
-		
+
 		LS = location.split()
 		if len(LS) == 2 and LS[0].replace('.', '').isnumeric() and LS[1].replace('.', '').isnumeric():
 			location = [float(x) for x in LS]
@@ -471,13 +474,13 @@ def search():
 				continue
 			if location[1] < 0: # maybe don't look below horizon...
 				alert = input("! Below horizon! Are you sure? [*/yes] ")
-				if alert != "yes": 
+				if alert != "yes":
 					continue
 			same_str = ""
-			
+
 		az, alt = location[0], location[1]
 		print("Arbitrary location Az: " + str(az) + ", Alt: " + str(alt))
-		
+
 		same = temp
 		return (az, alt)
 
@@ -490,7 +493,7 @@ def set_speed():
 	global delay_AZ
 	global SPEED_AZ
 
-	SPEED_AZ, SPEED_ALT = map(float, input("Speed for Az Alt (deg/second): ").split()) 
+	SPEED_AZ, SPEED_ALT = map(float, input("Speed for Az Alt (deg/second): ").split())
 
 	delay_AZ = 360.0 / (SPEED_AZ * SPR_AZ * 2.0)
 	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / SPEED_AZ) + " seconds.")
@@ -527,7 +530,7 @@ def set_track_refresh_interval():
 
 ################## backup location
 
-# whenever the current location changes, update a file just in case. 
+# whenever the current location changes, update a file just in case.
 # one could reterive back the information and restart at the last kown location
 
 def recover_last_location():
@@ -535,19 +538,19 @@ def recover_last_location():
 		# Look at each line of the file
 		for line in f:
 			line=line.strip()
-		
+
 			# Skip comments
 			if line.startswith('#'):
-				continue	
-			
+				continue
+
 			pound = line.find("#")
 			if pound >= 0:
 				line = line[:pound]
 
 			# Split the line apart.
-			elements = line.split(";") 
+			elements = line.split(";")
 			break # 1 record only
-	
+
 	global azimuth
 	global altitude
 	global same
@@ -559,8 +562,8 @@ def recover_last_location():
 		if elements[2] != "":
 			same = elements[2]
 			print ("Recovered last successfull searched location: " + same + ".")
-		
-	
+
+
 def save_location():
 	with open(last_location_file, "w") as f:
 		line = str(azimuth) + ";" + str(altitude) + ";" + same + ";" + str(datetime.utcnow()) + "\n"
@@ -573,14 +576,14 @@ def set_location():
 	global azimuth
 	global altitude
 
-	#azimuth, altitude = map(float, input("Current Az Alt: ").split()) 
+	#azimuth, altitude = map(float, input("Current Az Alt: ").split())
 	new_azimuth, new_altitude = search()
 	if (new_azimuth == None or new_altitude == None):
 		return()
-	
-	azimuth  = new_azimuth % 360.0	
+
+	azimuth  = new_azimuth % 360.0
 	altitude = new_altitude  % 360.0
-	
+
 	save_location()
 
 
@@ -611,44 +614,44 @@ ramp_az_max_speed_factor = 5 # ramp up until 4 times faster than base speed
 ramp_alt_max_speed_factor = 5
 
 # not called directly by the user
-def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az = 2, 
-		amount_alt = 0.0, direction_alt = "up", speed_alt = 10.0, min_steps_alt = 2, 
+def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az = 2,
+		amount_alt = 0.0, direction_alt = "up", speed_alt = 10.0, min_steps_alt = 2,
 		update_position = True):
 	#print("Debug move:", amount_az, direction_az, amount_alt, direction_alt)
-	
+
 	if amount_az < 0: # revert direction
 		if direction_az == "right": direction_az = "left"
 		else: direction_az == "left"
 		amount_az = abs(amount_az)
 
 	global azimuth
-	step_count_az =  int(round(amount_az *  SPR_AZ  / 360.0)) 
+	step_count_az =  int(round(amount_az *  SPR_AZ  / 360.0))
 	if step_count_az >= min_steps_az:
 		if direction_az == "right":  GPIO.output(DIR_AZ, CW_AZ)
-		else: GPIO.output(DIR_AZ, CCW_AZ)  
+		else: GPIO.output(DIR_AZ, CCW_AZ)
 		delay_az = 360.0 / (speed_az * SPR_AZ * 2.0)
 		print ("Az will move " + direction_az + " " + str(step_count_az) + " steps, at a speed of " + str(speed_az) + " degrees / second")
-		
+
 		temp_min_delay_az = delay_az / ramp_az_max_speed_factor
-		
+
 		for x in range(int(step_count_az)):
-            
-			# ramp-up, stall, then ramp-down: 
+
+			# ramp-up, stall, then ramp-down:
 			if step_count_az > ramp_az_threshold:
 				if x < step_count_az / 2: # ramp-up or stall
-					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**x) # ! do not below min delay 
+					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**x) # ! do not below min delay
 				else: # ramp-down
 					y = step_count_az - x
-					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**y) # ! do not below min delay 
+					temp_delay_az = max(temp_min_delay_az, delay_az * ramp_az_rate**y) # ! do not below min delay
 			else: temp_delay_az = delay_az
-			
+
 			#print (round(temp_delay_az*1000, 3))
-				
+
 			GPIO.output(STEP_AZ, GPIO.HIGH)
 			sleep(temp_delay_az)
 			GPIO.output(STEP_AZ, GPIO.LOW)
 			sleep(temp_delay_az)
-			
+
 			if update_position:
 				if direction_az == "right":  azimuth = azimuth + 360.0 / SPR_AZ
 				else: azimuth = azimuth - 360.0 / SPR_AZ
@@ -665,21 +668,21 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 	#print("step count alt: " + str(step_count_alt))
 	if step_count_alt >= min_steps_alt:
 		if direction_alt == "up":  GPIO.output(DIR_ALT, CCW_ALT)
-		else: GPIO.output(DIR_ALT, CW_ALT)  
+		else: GPIO.output(DIR_ALT, CW_ALT)
 		delay_alt = 360.0 / (speed_alt * SPR_ALT * 2.0)
 		print ("Alt will move " + direction_alt + " " + str(step_count_alt) + " steps, at a speed of " + str(speed_alt) + " degrees / second.")
-		
+
 		temp_min_delay_alt = delay_alt / ramp_alt_max_speed_factor
-		
+
 		for x in range(int(step_count_alt)):
 			if step_count_alt > ramp_alt_threshold:
 				if x < step_count_alt / 2: # ramp-up or stall
-					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**x) # ! do not below min delay 
+					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**x) # ! do not below min delay
 				else: # ramp-down
 					y = step_count_alt - x
-					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**y) # ! do not below min delay 
+					temp_delay_alt = max(temp_min_delay_alt, delay_alt * ramp_alt_rate**y) # ! do not below min delay
 			else: temp_delay_alt = delay_alt
-			
+
 			GPIO.output(STEP_ALT, GPIO.HIGH)
 			sleep(temp_delay_alt)
 			GPIO.output(STEP_ALT, GPIO.LOW)
@@ -689,7 +692,7 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 				if direction_alt == "up":  altitude = altitude + 360.0 / SPR_ALT
 				else: altitude = altitude - 360.0 / SPR_ALT
 				altitude = altitude % 360.0
-			
+
 	save_location()
 
 ################## move 1 step at a time (or microstep)
@@ -702,8 +705,8 @@ def up_1_step(update_position = True):
 	sleep(delay_ALT)
 	GPIO.output(STEP_ALT, GPIO.LOW)
 	sleep(delay_ALT)
-	
-	if update_position == True: 
+
+	if update_position == True:
 		global altitude
 		altitude = altitude + 360.0 / SPR_ALT
 		altitude = altitude % 360.0
@@ -715,8 +718,8 @@ def down_1_step(update_position = True):
 	sleep(delay_ALT)
 	GPIO.output(STEP_ALT, GPIO.LOW)
 	sleep(delay_ALT)
-	
-	if update_position == True: 
+
+	if update_position == True:
 		global altitude
 		altitude = altitude - 360.0 / SPR_ALT
 		altitude = altitude % 360.0
@@ -729,8 +732,8 @@ def right_1_step(update_position = True):
 	GPIO.output(STEP_AZ, GPIO.LOW)
 	sleep(delay_AZ)
 
-	if update_position == True: 
-		global azimuth 
+	if update_position == True:
+		global azimuth
 		azimuth = azimuth + 360.0 / SPR_AZ
 		azimuth = azimuth % 360.0
 		save_location()
@@ -742,7 +745,7 @@ def left_1_step(update_position = True):
 	GPIO.output(STEP_AZ, GPIO.LOW)
 	sleep(delay_AZ)
 
-	if update_position == True: 
+	if update_position == True:
 		global azimuth
 		azimuth = azimuth - 360.0 / SPR_AZ
 		azimuth = azimuth % 360.0
@@ -754,26 +757,26 @@ def left_1_step(update_position = True):
 ################## move 1 degree
 
 def up_1(update_position = True):
-	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
-		amount_alt = 1.0, direction_alt = "up", speed_alt = SPEED_ALT, min_steps_alt = 0, 
+	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4,
+		amount_alt = 1.0, direction_alt = "up", speed_alt = SPEED_ALT, min_steps_alt = 0,
 		update_position = update_position)
 
-def down_1(update_position = True):	
-	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4, 
-		amount_alt = 1.0, direction_alt = "down", speed_alt = SPEED_ALT, min_steps_alt = 0, 
+def down_1(update_position = True):
+	move(#amount_az = 0.0, direction_az = "right", speed_az = 1.0, min_steps_az = 4,
+		amount_alt = 1.0, direction_alt = "down", speed_alt = SPEED_ALT, min_steps_alt = 0,
 		update_position = update_position)
 
 
 
 def right_1(update_position = True):
-	move(amount_az = 1.0, direction_az = "right", speed_az = SPEED_AZ, min_steps_az = 0, 
-		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
+	move(amount_az = 1.0, direction_az = "right", speed_az = SPEED_AZ, min_steps_az = 0,
+		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2,
 		update_position = update_position)
 
 
 def left_1(update_position = True):
-	move(amount_az = 1.0, direction_az = "left", speed_az = SPEED_AZ, min_steps_az = 0, 
-		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2, 
+	move(amount_az = 1.0, direction_az = "left", speed_az = SPEED_AZ, min_steps_az = 0,
+		#amount_alt = 1.0, direction_alt = "up", speed_alt = 1.0, min_steps_alt = 2,
 		update_position = update_position)
 
 
@@ -788,22 +791,22 @@ def left_1(update_position = True):
 		#GPIO.output(STEP_ALT, GPIO.LOW)
 		#sleep(delay_ALT)
 
-		#if update_position == True: 
+		#if update_position == True:
 			#global altitude
 			#altitude = altitude + 360.0 / SPR_ALT
 			#altitude = altitude % 360.0
 			#save_location()
 
-#def down_1(update_position = True):	
+#def down_1(update_position = True):
 	#step_count_alt = int(round(1 *  SPR_ALT / 360.0))
 	#GPIO.output(DIR_ALT, CW_ALT)
 	#for x in range(step_count_alt):
 		#GPIO.output(STEP_ALT, GPIO.HIGH)
-		#sleep(delay_ALT)  
+		#sleep(delay_ALT)
 		#GPIO.output(STEP_ALT, GPIO.LOW)
 		#sleep(delay_ALT)
 
-		#if update_position == True: 
+		#if update_position == True:
 			#global altitude
 			#altitude = altitude - 360.0 / SPR_ALT
 			#altitude = altitude % 360.0
@@ -819,8 +822,8 @@ def left_1(update_position = True):
 		#sleep(delay_AZ)
 		#GPIO.output(STEP_AZ, GPIO.LOW)
 		#sleep(delay_AZ)
-		
-		#if update_position == True: 
+
+		#if update_position == True:
 			#global azimuth
 			#azimuth = azimuth + 360.0 / SPR_AZ
 			#azimuth = azimuth % 360.0
@@ -835,8 +838,8 @@ def left_1(update_position = True):
 		#sleep(delay_AZ)
 		#GPIO.output(STEP_AZ, GPIO.LOW)
 		#sleep(delay_AZ)
-		
-		#if update_position == True: 
+
+		#if update_position == True:
 			#global azimuth
 			#azimuth = azimuth - 360.0 / SPR_AZ
 			#azimuth = azimuth % 360.0
@@ -852,11 +855,11 @@ def manual_drive():
 		key = getkey()
 		if key == keys.UP: up_1_step(update_position = True)
 		elif key == keys.DOWN: down_1_step(update_position = True)
-		elif key == keys.LEFT: left_1_step(update_position = True) 
-		elif key == keys.RIGHT: right_1_step(update_position = True) 
+		elif key == keys.LEFT: left_1_step(update_position = True)
+		elif key == keys.RIGHT: right_1_step(update_position = True)
 		elif key == 'w': up_1(update_position = True)
 		elif key == 's': down_1(update_position = True)
-		elif key == 'a': left_1(update_position = True) 
+		elif key == 'a': left_1(update_position = True)
 		elif key == 'd': right_1(update_position = True)
 		elif key == '?': get_location()
 		elif key == '!': get_status()
@@ -900,72 +903,72 @@ def wait_for_scan_sky(timeout):
 		#elif key == 'w': up_1(update_position = False)
 		#elif key == 's': down_1(update_position = False)
 		#elif key == 'a': left_1(update_position = False) #
-		#elif key == 'd': right_1(update_position = False) 
-		
+		#elif key == 'd': right_1(update_position = False)
+
 	#return (None)
 
 # moves around the current location to allow the user to spot a body
 def scan_sky():
-	
+
 	# defaults for WA15 eypeice
 	#amount_total = 5
-	#amount_step = 0.5 
+	#amount_step = 0.5
 	#pause = 2
-	
-	amount_total, amount_step, pause =  map(float, input("Total area scaned (degrees), increment size (degrees) and cooldwon pause between steps (seconds): ").split()) 
-	
+
+	amount_total, amount_step, pause =  map(float, input("Total area scaned (degrees), increment size (degrees) and cooldwon pause between steps (seconds): ").split())
+
 	# start in the lower left corner of the scan area
 	# I am now in the center of the area
 	# move half the scaing area, down and left, from the center of the area
 	steps = int(math.ceil(amount_total/amount_step))
 	print("Steps / row: " + str(steps))
-	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ, 
-		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ,
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT,
 		 update_position = False)
-	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = SPEED_AZ, 
-		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = SPEED_AZ,
+		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = SPEED_ALT,
 		 #update_position = False)
-	
+
 	#sleep (pause) # wait to spot something
 	try:
 		if wait_for_scan_sky( pause ) ==  True: return()
 	except KeyboardInterrupt as err: # accept Ctrl+c
 		pass
-	
+
 	# move 1 step at a time, upwords, right then left, row by row
 	#steps = int(math.ceil(amount_total/amount_step))
 	for i in range(steps): # azimuth
 		for j in range(steps): # altitude
-			
+
 			# change direction between rows
 			if i % 2 == 0: direction_az = "right"
 			else: direction_az = "left"
-			
-			
-			move(amount_az = amount_step, direction_az = direction_az, speed_az = SPEED_AZ, 
-				amount_alt = 0, direction_alt = "up", speed_alt = SPEED_ALT, 
+
+
+			move(amount_az = amount_step, direction_az = direction_az, speed_az = SPEED_AZ,
+				amount_alt = 0, direction_alt = "up", speed_alt = SPEED_ALT,
 				update_position = False)
-			
+
 			#sleep (pause) # wait to spot something
 			try:
 				if wait_for_scan_sky( pause ) ==  True: return()
 			except KeyboardInterrupt as err: # accept Ctrl+c
 				pass
-		
+
 		# next row
-		move(amount_az = 0, direction_az = "right", speed_az = 1.0, 
-			amount_alt = amount_step, direction_alt = "up", speed_alt = 1.0, 
+		move(amount_az = 0, direction_az = "right", speed_az = 1.0,
+			amount_alt = amount_step, direction_alt = "up", speed_alt = 1.0,
 			update_position = False)
-	
-	
+
+
 	# return to original location
 	# I am now in the top-right corner of the scanned area
 	# move half the scaing area, down and left, from the top-right corner
-	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ, 
-		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT, 
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ,
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT,
 		 update_position = False)
-	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = 1.0, 
-		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = 1.0, 
+	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = 1.0,
+		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = 1.0,
 		 #update_position = False)
 
 # let the user specify a location (coordinates or named body) and go there
@@ -984,7 +987,7 @@ def go_to_location():
 		print ("Will move Az from " + str(azimuth) + " to " + str(target_az))
 	if altitude != target_alt:
 		print ("Will move Alt from " + str(altitude) + " to " + str(target_alt))
-	
+
 #	delta_az = abs(target_az - azimuth)
 #	delta_az %= 360.0
 #	delta_az = 180.0 - abs(delta_az - 180.0)
@@ -996,17 +999,17 @@ def go_to_location():
 	TAz = target_az + 360.0
 	delta_az_right = (TAz - Az) % 360.0
 	delta_az_left  = (Az - TAz) % 360.0
-	
+
 	delta_az = min(delta_az_right, delta_az_left)
-	direction_az = ("left", "right")[delta_az_right < delta_az_left] 
-	
+	direction_az = ("left", "right")[delta_az_right < delta_az_left]
+
 	if altitude > 180: delta_alt = target_alt - altitude + 360 # TODO: should not happen under regular usage!
 	else: delta_alt = target_alt - altitude
 	direction_alt = ("down", "up")[delta_alt > 0.0]
 
-	move(amount_az = delta_az, direction_az = direction_az, speed_az = SPEED_AZ, 
+	move(amount_az = delta_az, direction_az = direction_az, speed_az = SPEED_AZ,
 		amount_alt = abs(delta_alt), direction_alt = direction_alt, speed_alt = SPEED_ALT)
-	
+
 
 ################## track
 
@@ -1047,8 +1050,8 @@ def wait_for(timeout):
 		elif key == 'w': up_1(update_position = False)
 		elif key == 's': down_1(update_position = False)
 		elif key == 'a': left_1(update_position = False) #
-		elif key == 'd': right_1(update_position = False) 
-		
+		elif key == 'd': right_1(update_position = False)
+
 	#return (None)
 
 def track():
@@ -1058,77 +1061,77 @@ def track():
 		same_str_builder = ": " + same_str if same_str != "" else ""
 		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
 		location = input("Location (common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
-		
-		if location == "named": 
+
+		if location == "named":
 			print_named_stars()
 			continue
-		if location == "all": 
+		if location == "all":
 			print_available_stars()
 			continue
-		if location == "landmakrs": 
+		if location == "landmakrs":
 			print_landmarks()
 			continue
-		
-		if location == 'c': return ()	
-	
-		if location == "same": 
+
+		if location == 'c': return ()
+
+		if location == "same":
 			location = same
-		
+
 		location_coord = search_0(location)
-		
+
 		if location_coord is None:
 			print("Not found. Try again. ")
 			continue
-		
+
 		if location_coord[0] < 0 or location_coord[0] >= 360 or location_coord[1] < 0 or location_coord[1] > 90:
 			print("Outside valid and / or trackable ranges. Try again. ")
 			continue
-		
+
 		found = True
-	
+
 	target_az, target_alt = location_coord[0], location_coord[1]
-	
-	
+
+
 	# step 2: track: move, wait for ... seconds while accepting keybord input, search again
 	while not (target_az < 0 or target_az >= 360 or target_alt < 0 or target_alt > 90):
 		#print("c to cancel, ? to get status.")
 		#key = getkey()
 		#if key == '?': get_location()
 		#elif key == 'c': break
-	
+
 		print ("Will move Az from " + str(azimuth) + " to " + str(target_az) + " and Alt from " + str(altitude) + " to " + str(target_alt))
-		
+
 		######### changhed ti the same algoritm as in go_to_location()
-		
+
 		#delta_az = abs(target_az - azimuth)
 		#delta_az %= 360.0
 		#delta_az = 180.0 - abs(delta_az - 180.0)
 		#if (azimuth + delta_az) % 360.0 == target_az:
 			#direction_az = "right"
 		#else: direction_az = "left"
-		
+
 		Az = azimuth + 360.0
 		TAz = target_az + 360.0
 		delta_az_right = (TAz - Az) % 360.0
 		delta_az_left  = (Az - TAz) % 360.0
-	
+
 		delta_az = min(delta_az_right, delta_az_left)
-		direction_az = ("left", "right")[delta_az_right < delta_az_left] 
-		
+		direction_az = ("left", "right")[delta_az_right < delta_az_left]
+
 		if altitude > 180: delta_alt = target_alt - altitude + 360
 		else: delta_alt = target_alt - altitude
 		direction_alt = ("down", "up")[delta_alt > 0.0]
 
 		move(amount_az = delta_az, direction_az = direction_az, speed_az = SPEED_AZ,
 			amount_alt = abs(delta_alt), direction_alt = direction_alt, speed_alt = SPEED_ALT)
-		
+
 		# accept keyboard input (c or tuning directions) while waiting between moves
 		#sleep(track_refresh_interval)
 		try:
 			if wait_for( track_refresh_interval ) ==  True: break
 		except KeyboardInterrupt as err: # accept Ctrl+c
 			pass
-		
+
 		#print ("...next move now...")
 		target_az, target_alt = search_0(location)
 
@@ -1145,16 +1148,16 @@ def get_location():
 def get_status():
 	get_location()
 	if same != "": print ("Last successfull searched body:" + same)
-	
+
 	print("Speed Az: " + str(SPEED_AZ) + ", Alt: " + str(SPEED_ALT))
 	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / SPEED_AZ) + " seconds.")
 	print ("delay (Az): " + str(delay_AZ) + " seconds.")
-	
+
 	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / SPEED_ALT) + " seconds.")
 	print ("delay (Alt): " + str(delay_ALT) + " seconds.")
-	
+
 	print("Microstepping Az: " + str(microstep_az) + ", Alt: " + str(microstep_alt))
-	
+
 	print("Track refresh interval: " + str(track_refresh_interval) + " seconds." )
 
 
@@ -1170,41 +1173,41 @@ def get_status():
 def quit_nicely():
 	GPIO.cleanup()
 
-	
+
 def show_options():
 	print ("\nAvailable options:")
 	print ("0: quit_nicely")
-	print ("1-4: track, move, manual drive, scan")	
+	print ("1-4: track, move, manual drive, scan")
 	print ("5-9: set speed, microstepping, track refresh interval, observer, current location")
 	print ("10: recover last location")
 	print ("18 19 20: get observer, current location, status")
 	print ("21, 22, 23: print named stars, all available stars (YBS), landmakrs")
 	print ("31: make fake star")
 
-def switch_main(option):	
+def switch_main(option):
 	switcher = {
 		0: quit_nicely,
-		
+
 		1: track,
 		2: go_to_location,
 		3: manual_drive,
 		4: scan_sky,
-		
+
 		5: set_speed,
 		6: set_microstepping,
 		7: set_track_refresh_interval,
 		8: set_observer,
 		9: set_location,
 		10: recover_last_location,
-		
+
 		18: get_observer,
 		19: get_location,
 		20: get_status,
-		
+
 		21: print_named_stars,
 		22: print_available_stars,
 		23: print_landmarks,
-		
+
 		31: make_fake_star
 	}
 	func = switcher.get(option, show_options)
@@ -1216,7 +1219,7 @@ show_options()
 option = int(input("what is my purpose? "))
 while option != 0:
 	switch_main(option)
-	
+
 	show_options()
 	option = int(input("what is my purpose? "))
 
@@ -1225,6 +1228,3 @@ while option != 0:
 quit_nicely()
 
 print ("good riddance!")
-
-
-
