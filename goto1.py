@@ -36,7 +36,7 @@ same = "0 0" # keep track of the last successfull searched location. TODO: fix t
 same_str = "" # print-ready version of same (only when same is a body)
 
 last_location_file = "/home/pi/last_location_file.txt" # keep a record of the last known location (coordinates, body, time)
-
+print(last_location_file)
 # When in tracking mode, update every x seconds
 track_refresh_interval = 20
 
@@ -300,6 +300,7 @@ def switch_main(option):
 ################
 
 print("before main")
+print(last_location_file)
 
 def main():
 	print("main")
