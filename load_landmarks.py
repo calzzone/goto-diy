@@ -37,10 +37,5 @@ def print_landmarks():
 
 #####
 
-def test1():
-	global landmarks_file
-	print (landmarks_file)
-
 #landmarks_file = "balcon_sud.landmakrs"
 #landmarks = gather_landmarks(landmarks_file)
-test1()

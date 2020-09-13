@@ -71,7 +71,7 @@ def print_observer(_observer_name = None, _observer=None):
 			" Elevation: " + str(_observer.elevation) + "\n" +
 			"Pressure: " + str(_observer.pressure) + " Temp: " + str(+observer.temp) )
 
-observers_file = "observers.txt"
-observer_name = "cluj" # default observer; has to be present in observers_file
-observers = gather_observers(observers_file)
-observer, observer_name = set_observer(observer_name)
+# observers_file = "observers.txt"
+# observer_name = "cluj" # default observer; has to be present in observers_file
+# observers = gather_observers(observers_file)
+# observer, observer_name = set_observer(observer_name)

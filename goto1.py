@@ -30,7 +30,12 @@ GPIO.setmode(GPIO.BCM)
 from config import * # global variables
 
 from load_observers import *
+observers = gather_observers(observers_file)
+observer, observer_name = set_observer(observer_name)
+
 from load_landmarks import *
+landmarks = gather_landmarks(landmarks_file)
+
 from backup_location import *
 from ephem_wrapper import *
 
