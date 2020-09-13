@@ -43,6 +43,7 @@ track_refresh_interval = 20
 
 from load_observers import *
 from load_landmarks import *
+from backup_location import *
 from ephem_wrapper import *
 
 from set_functions import *
