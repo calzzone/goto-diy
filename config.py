@@ -86,6 +86,7 @@ altitude = 0.0
 
 ################## other parameters
 
+
 same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
 same_str = "" # print-ready version of same (only when same is a body)
 
@@ -93,3 +94,18 @@ same_str = "" # print-ready version of same (only when same is a body)
 
 # When in tracking mode, update every x seconds
 track_refresh_interval = 20
+
+
+# make a fake star, mostly for tracking arbitrary Az/Alt
+fake_star = None # initialize with a proper value in ephem_wrapper.py
+
+
+
+landmarks_file = "balcon_sud.landmakrs"
+landmarks = []
+
+
+
+
+# keep a record of the last known location (coordinates, body, time)
+last_location_file = "/home/pi/last_location_file.txt"

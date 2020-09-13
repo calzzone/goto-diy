@@ -1,8 +1,11 @@
 
 # Raspberry Pi GPIO access
 # import RPi.GPIO as GPIO
-# GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BCM)
 
+from set_functions import *
+from backup_location import *
+from move_function import *
 
 ################## move 1 degree
 

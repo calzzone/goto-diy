@@ -17,6 +17,12 @@ import math
 import ephem
 from ephem import *
 
+from set_functions import *
+from backup_location import *
+from move_function import *
+from move_1_step import *
+from move_1_deg import *
+
 ######### Scan sky
 
 # accept keyboard input (c or tuning directions) while waiting between moves

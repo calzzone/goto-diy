@@ -17,7 +17,11 @@ import math
 import ephem
 from ephem import *
 
-
+from set_functions import *
+from backup_location import *
+from move_function import *
+from move_1_step import *
+from move_1_deg import *
 ################## manual drive mode
 
 def manual_drive():

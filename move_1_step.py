@@ -1,7 +1,11 @@
 
 # Raspberry Pi GPIO access
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 # GPIO.setmode(GPIO.BCM)
+
+from set_functions import *
+from backup_location import *
+from move_function import *
 
 ################## move 1 step at a time (or microstep)
 

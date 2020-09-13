@@ -19,9 +19,6 @@ from ephem import *
 
 ################## backup location
 
-# keep a record of the last known location (coordinates, body, time)
-last_location_file = "/home/pi/last_location_file.txt"
-
 # whenever the current location changes, update a file just in case.
 # one could reterive back the information and restart at the last kown location
 

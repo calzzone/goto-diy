@@ -26,12 +26,8 @@ from ephem import *
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
-from config import *
 
-
-
-
-
+from config import * # global variables
 
 from load_observers import *
 from load_landmarks import *

@@ -1,21 +1,21 @@
 
-from time import sleep
-from getkey import getkey, keys
+# from time import sleep
+# from getkey import getkey, keys
 from datetime import datetime
-
-import os
-#print (os.path.abspath(os.getcwd()))
-
-import signal
-import sys
-from threading import Timer
-from readchar import readkey
-
-import string
-import math
-
+#
+# import os
+# #print (os.path.abspath(os.getcwd()))
+#
+# import signal
+# import sys
+# from threading import Timer
+# from readchar import readkey
+#
+# import string
+# import math
+#
 import ephem
-from ephem import *
+# from ephem import *
 
 ###### available named bodies
 
@@ -134,7 +134,7 @@ def compute(thing, observer):
 
 
 # make a fake star, mostly for tracking arbitrary Az/Alt
-fake_star = ephem.FixedBody()
+fake_star = ephem.FixedBody() # defined in config.py as None
 def make_fake_star(az = None, alt = None):
 	if az is None or alt is None: # no args
 		az, alt = input("Define fake star by Az Alt: ").strip().split().map(float)
@@ -199,7 +199,7 @@ def search_0(target):
 	elif target == "fake": # fake body, defined by az/alt
 		thing = fake_star
 	elif target[0] == '#' and target[1:].isnumeric() : # landmarks, defined by az/alt
-        #landmarks = gather_landmarks(landmarks_file)
+		#landmarks = gather_landmarks(landmarks_file)
 		landmark = int(target[1:].strip())-1
 		return( landmarks[landmark]["Az"], landmarks[landmark]["Alt"] )
 	else: return(None)
