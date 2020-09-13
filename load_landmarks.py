@@ -2,9 +2,9 @@
 # TODO: add more flexibility; maybe a folder with landmakrs, posibility to choose at runtime, correlate to observer locations
 
 # reads landmarks_file and returns a list of dictionaries (each is a landmarks wih name, Az, Alt)
-def gather_landmarks(landmarks_file):
+def gather_landmarks(_landmarks_file):
 
-	landmarks_lines = open(landmarks_file, "r").readlines()
+	landmarks_lines = open(_landmarks_file, "r").readlines()
 	landmarks = []
 
 	for line in landmarks_lines:
