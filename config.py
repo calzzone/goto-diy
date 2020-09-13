@@ -104,6 +104,9 @@ fake_star = None # initialize with a proper value in ephem_wrapper.py
 landmarks_file = "balcon_sud.landmakrs"
 landmarks = []
 
+print("this should run!")
+print(landmarks_file)
+
 
 
 
