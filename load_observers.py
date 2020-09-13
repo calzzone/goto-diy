@@ -71,5 +71,5 @@ def print_observer(_observer_name = None, _observer=None):
 
 observers_file = "observers.txt"
 observer_name = "cluj" # default observer; has to be present in observers_file
-observers = gather_observers()
+observers = gather_observers(observers_file)
 observer, observer_name = set_observer(observer_name)
