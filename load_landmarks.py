@@ -38,6 +38,7 @@ def print_landmarks():
 #####
 
 print("this should run!")
+from config import landmarks_file
 print(config.landmarks_file)
 
 #landmarks_file = "balcon_sud.landmakrs"
