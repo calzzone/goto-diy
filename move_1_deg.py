@@ -1,7 +1,7 @@
 
 # Raspberry Pi GPIO access
-# import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
+import RPi.GPIO as GPIO
+#GPIO.setmode(GPIO.BCM)
 
 
 import move_function, config

@@ -14,6 +14,10 @@
 #import string
 #import math
 
+# Raspberry Pi GPIO access
+import RPi.GPIO as GPIO
+#GPIO.setmode(GPIO.BCM)
+
 # global variables
 import config
 from config import *
