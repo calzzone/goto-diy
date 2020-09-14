@@ -13,8 +13,8 @@ import ephem
 
 # Reads the default observers_file or a new one provided as argument and
 # returns a dictionary of observer_names : ephem.Observer pairs
-def gather_observers(observers_file=None):
-	if observers_file == None: _observers_file = config.observers_file
+def gather_observers(_observers_file=None):
+	if _observers_file == None: _observers_file = config.observers_file
 
 	observers_lines = open(_observers_file, "r").readlines()
 	observers = {}
