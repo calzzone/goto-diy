@@ -1,5 +1,5 @@
 
-#from time import sleep
+from time import sleep
 #from getkey import getkey, keys
 #from datetime import datetime
 
