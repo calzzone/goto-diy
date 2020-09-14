@@ -35,7 +35,7 @@ def down_1_step(update_position = True):
 
 	if update_position == True:
 		#global altitude
-		config.altitude = config.altitude - 360.0 / sconfig.teps_per_rotation_ALT
+		config.altitude = config.altitude - 360.0 / config.steps_per_rotation_ALT
 		config.altitude = config.altitude % 360.0
 		backup_location.save_location()
 
