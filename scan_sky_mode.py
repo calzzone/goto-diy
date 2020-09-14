@@ -74,8 +74,8 @@ def scan_sky():
 	# move half the scaing area, down and left, from the center of the area
 	steps = int(math.ceil(amount_total/amount_step))
 	print("Steps / row: " + str(steps))
-	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = config.speed_Az,
-		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = config.speed_Alt,
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = config.speed_AZ,
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = config.speed_ALT,
 		 update_position = False)
 
 	#sleep (pause) # wait to spot something

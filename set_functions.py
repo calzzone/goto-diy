@@ -27,18 +27,18 @@ import backup_location # for save_location() in set_location()
 
 def set_speed():
 	#global delay_ALT
-	#global speed_Alt
+	#global speed_ALT
 	#global delay_AZ
-	#global speed_Az
+	#global speed_AZ
 
-	config.speed_Az, config.speed_Alt = map(float, input("Speed for Az Alt (deg/second): ").split())
+	config.speed_AZ, config.speed_ALT = map(float, input("Speed for Az Alt (deg/second): ").split())
 
-	config.delay_AZ = 360.0 / (config.speed_Az * config.steps_per_rotation_AZ * 2.0)
-	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / config.speed_Az) + " seconds.")
+	config.delay_AZ = 360.0 / (config.speed_AZ * config.steps_per_rotation_AZ * 2.0)
+	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / config.speed_AZ) + " seconds.")
 	print ("delay (Az): " + str(config.delay_AZ) + " seconds.")
 
-	config.delay_ALT = 360.0 / (config.speed_Alt * config.steps_per_rotation_ALT * 2.0)
-	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / config.speed_Alt) + " seconds.")
+	config.delay_ALT = 360.0 / (config.speed_ALT * config.steps_per_rotation_ALT * 2.0)
+	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / config.speed_ALT) + " seconds.")
 	print ("delay (Alt): " + str(config.delay_ALT) + " seconds.")
 
 # TODO: when micros changes, does location stay the same?

@@ -33,11 +33,11 @@ def print_status():
 	print_location()
 	if config.same != "": print ("Last successfull searched body:" + config.same)
 
-	print("Speed Az: " + str(config.speed_Az) + ", Alt: " + str(config.speed_Alt))
-	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / config.speed_Az) + " seconds.")
+	print("Speed Az: " + str(config.speed_AZ) + ", Alt: " + str(config.speed_ALT))
+	print ("Time to complete 0 to 360 deg rotation (Az): " +  str(360.0 / config.speed_AZ) + " seconds.")
 	print ("delay (Az): " + str(config.delay_AZ) + " seconds.")
 
-	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / config.speed_Alt) + " seconds.")
+	print ("Time to complete 0 to 90 deg rotation (Alt): " +  str(90.0 / config.speed_ALT) + " seconds.")
 	print ("delay (Alt): " + str(config.delay_ALT) + " seconds.")
 
 	print("Microstepping Az: " + str(config.microstep_az) + ", Alt: " + str(config.microstep_alt))

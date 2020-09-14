@@ -44,8 +44,8 @@ GPIO.output(MODE_AZ, MICROSTEP_RESOLUTION[ microstep_az ])
 
 speed_AZ = 10.0 # deg / second
 
-delay_AZ = 360.0 / (speed_Az * steps_per_rotation_AZ * 2.0)
-#print ("Time to complete 360 deg rotation (Az): " +  str(360.0/speed_Az) + " seconds.")
+delay_AZ = 360.0 / (speed_AZ * steps_per_rotation_AZ * 2.0)
+#print ("Time to complete 360 deg rotation (Az): " +  str(360.0/speed_AZ) + " seconds.")
 #print ("Delay (Az): " + str(delay_AZ) + " seconds.\n")
 #delay_AZ = 0.005 # failsafe value
 

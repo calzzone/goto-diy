@@ -132,8 +132,8 @@ def track():
 		else: delta_alt = target_alt - config.altitude
 		direction_alt = ("down", "up")[delta_alt > 0.0]
 
-		move(amount_az = delta_az, direction_az = direction_az, speed_az = config.speed_Az,
-			amount_alt = abs(delta_alt), direction_alt = direction_alt, speed_alt = config.speed_Alt)
+		move(amount_az = delta_az, direction_az = direction_az, speed_az = config.speed_AZ,
+			amount_alt = abs(delta_alt), direction_alt = direction_alt, speed_alt = config.speed_ALT)
 
 		# accept keyboard input (c or tuning directions) while waiting between moves
 		#sleep(track_refresh_interval)
