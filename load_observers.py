@@ -1,16 +1,22 @@
-
-##### observers (observing location on the earth)
-# ephem knows a list of cities, but it's too small.
-# TODO: use some online thing to get gps coordinates, elevation and even pressure and temperature
+# global variables
+import config
+from config import *
 
 #import string
 import ephem
 #from ephem import *
 
-# Reads observers_file and returns a dictionary of observer_names : ephem.Observer pairs
-def gather_observers(observers_file):
+##### observers (observing location on the earth)
+# ephem knows a list of cities, but it's too small.
+# TODO: use some online thing to get gps coordinates, elevation and even pressure and temperature
 
-	observers_lines = open(observers_file, "r").readlines()
+
+# Reads the default observers_file or a new one provided as argument and
+# returns a dictionary of observer_names : ephem.Observer pairs
+def gather_observers(observers_file=None):
+	if observers_file == None: _observers_file = config.observers_file
+
+	observers_lines = open(_observers_file, "r").readlines()
 	observers = {}
 
 	for line in observers_lines:
@@ -49,29 +55,30 @@ def set_observer(new_observer = None):
 	with_arg = True if new_observer is None else False
 	while True:
 		if with_arg: # if new_observer is None:
-			print ("Currently available obsever locations as defined in " + observers_file + ": " + ", ".join(observers.keys()) + ". ")
+			print ("Currently available obsever locations as defined in " +
+			config.observers_file + ": " + ", ".join(config.observers.keys()) + ". ")
 			new_observer = input("Type the name of the observer location or 'c' to cancel: ")
 
 		if new_observer == "c": return ()
-		elif new_observer in observers.keys():
+		elif new_observer in config.observers.keys():
 			#observer = observers
 			if with_arg:
-				global observer
-				global observer_name
-				observer, observer_name = observers[new_observer], new_observer
-			return (observers[new_observer], new_observer)
+				#global observer
+				#global observer_name
+				config.observer, config.observer_name = config.observers[new_observer], new_observer
+			return (config.observers[new_observer], new_observer)
 
 # Print info about the global observer (if no args provied) or a specified observer
 def print_observer(_observer_name = None, _observer=None):
-	if _observer_name == None: _observer_name = observer_name
-	if _observer == None: _observer = observer
+	if _observer_name == None: _observer_name = config.observer_name
+	if _observer == None: _observer = config.observer
 
 	print ( "Current observing location: " + _observer_name + ":")
 	print ( "Lat: " + str(_observer.lat) + " Lon: " + str(_observer.lon) +
 			" Elevation: " + str(_observer.elevation) + "\n" +
 			"Pressure: " + str(_observer.pressure) + " Temp: " + str(+observer.temp) )
 
-# observers_file = "observers.txt"
-# observer_name = "cluj" # default observer; has to be present in observers_file
-# observers = gather_observers(observers_file)
-# observer, observer_name = set_observer(observer_name)
+# observers_file = "observers.txt" # in config
+# observer_name = "cluj" # default observer; has to be present in observers_file # in config
+#config.observers = gather_observers(config.observers_file) # in main
+#config.observer, config.observer_name = set_observer(config.observer_name) # in main

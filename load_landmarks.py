@@ -1,3 +1,7 @@
+# global variables
+import config
+from config import *
+
 # Landmarks: the same format as observers
 # TODO: add more flexibility; maybe a folder with landmakrs, posibility to choose at runtime, correlate to observer locations
 
@@ -37,5 +41,5 @@ def print_landmarks():
 
 #####
 
-#landmarks_file = "balcon_sud.landmakrs"
-#landmarks = gather_landmarks(landmarks_file)
+#config.landmarks_file = "balcon_sud.landmakrs"
+#config.landmarks = gather_landmarks(config.landmarks_file) # in main

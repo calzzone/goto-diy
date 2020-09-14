@@ -17,7 +17,7 @@ import math
 import ephem
 from ephem import *
 
-from set_functions import *
+from print_functions import *
 from backup_location import *
 from move_function import *
 from move_1_step import *

@@ -1,25 +1,26 @@
 
-from time import sleep
-from getkey import getkey, keys
-from datetime import datetime
+#from time import sleep
+#from getkey import getkey, keys
+#from datetime import datetime
 
-import os
+#import os
 #print (os.path.abspath(os.getcwd()))
 
-import signal
-import sys
-from threading import Timer
-from readchar import readkey
+#import signal
+#import sys
+#from threading import Timer
+#from readchar import readkey
 
-import string
-import math
+#import string
+#import math
 
-import ephem
-from ephem import *
+# global variables
+import config
+from config import *
 
 
-from set_functions import *
-from backup_location import *
+#from set_functions import *
+import backup_location # for save_location()
 
 ################## move
 
@@ -49,12 +50,14 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 		else: direction_az == "left"
 		amount_az = abs(amount_az)
 
-	global azimuth
-	step_count_az =  int(round(amount_az *  SPR_AZ  / 360.0))
+	#global azimuth
+	step_count_az =  int(round(amount_az *  config.steps_per_rotation_AZ  / 360.0))
 	if step_count_az >= min_steps_az:
 		if direction_az == "right":  GPIO.output(DIR_AZ, CW_AZ)
 		else: GPIO.output(DIR_AZ, CCW_AZ)
-		delay_az = 360.0 / (speed_az * SPR_AZ * 2.0)
+
+		# TODO: calrify the message, speed is variable now
+		delay_az = 360.0 / (speed_az * config.steps_per_rotation_AZ * 2.0)
 		print ("Az will move " + direction_az + " " + str(step_count_az) + " steps, at a speed of " + str(speed_az) + " degrees / second")
 
 		temp_min_delay_az = delay_az / ramp_az_max_speed_factor
@@ -78,9 +81,9 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 			sleep(temp_delay_az)
 
 			if update_position:
-				if direction_az == "right":  azimuth = azimuth + 360.0 / SPR_AZ
-				else: azimuth = azimuth - 360.0 / SPR_AZ
-				azimuth = azimuth % 360.0
+				if direction_az == "right":  config.azimuth = config.azimuth + 360.0 / config.steps_per_rotation_AZ
+				else: config.azimuth = config.azimuth - 360.0 / config.steps_per_rotation_AZ
+				config.azimuth = config.azimuth % 360.0
 
 	###
 	if amount_alt < 0: # revert direction
@@ -88,13 +91,15 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 		else: direction_alt == "up"
 		amount_alt = abs(amount_alt)
 
-	global altitude
-	step_count_alt =  int(round(amount_alt *  SPR_ALT  / 360.0))
+	#global altitude
+	step_count_alt =  int(round(amount_alt *  config.steps_per_rotation_ALT  / 360.0))
 	#print("step count alt: " + str(step_count_alt))
 	if step_count_alt >= min_steps_alt:
 		if direction_alt == "up":  GPIO.output(DIR_ALT, CCW_ALT)
 		else: GPIO.output(DIR_ALT, CW_ALT)
-		delay_alt = 360.0 / (speed_alt * SPR_ALT * 2.0)
+
+		# TODO: speed is variable, now, update the message
+		delay_alt = 360.0 / (speed_alt * config.steps_per_rotation_ALT * 2.0)
 		print ("Alt will move " + direction_alt + " " + str(step_count_alt) + " steps, at a speed of " + str(speed_alt) + " degrees / second.")
 
 		temp_min_delay_alt = delay_alt / ramp_alt_max_speed_factor
@@ -114,8 +119,8 @@ def move(amount_az = 0.0, direction_az = "right", speed_az = 10.0, min_steps_az 
 			sleep(temp_delay_alt)
 
 			if update_position:
-				if direction_alt == "up":  altitude = altitude + 360.0 / SPR_ALT
-				else: altitude = altitude - 360.0 / SPR_ALT
-				altitude = altitude % 360.0
+				if direction_alt == "up":  config.altitude = config.altitude + 360.0 / config.steps_per_rotation_ALT
+				else: config.altitude = config.altitude - 360.0 / config.steps_per_rotation_ALT
+				config.altitude = config.altitude % 360.0
 
-	save_location()
+	backup_location.save_location()

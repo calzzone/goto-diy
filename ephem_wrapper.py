@@ -11,11 +11,18 @@ from datetime import datetime
 # from threading import Timer
 # from readchar import readkey
 #
-# import string
-# import math
+import string
+import math
 #
 import ephem
 # from ephem import *
+
+# global variables
+import config
+from config import *
+
+import load_landmarks  # for print_landmarks()
+# import load_observers
 
 ###### available named bodies
 
@@ -125,7 +132,7 @@ def read_database( filename ):
 def compute(thing, observer):
 	now = datetime.utcnow()
 	observer.date = now
-	thing.compute(observer)
+	thing.compute(config.observer)
 	print("Angle Az Alt:", thing.az, thing.alt)
 	return(thing.az*180/math.pi, thing.alt*180/math.pi)
 
@@ -134,18 +141,25 @@ def compute(thing, observer):
 
 
 # make a fake star, mostly for tracking arbitrary Az/Alt
-fake_star = ephem.FixedBody() # defined in config.py as None
+# when used from UI, it's called with no args, asks for Az & Alt, updates the config.fake_star
+# when used from within code, with both arguments, , returns a new fake_star and updates the config.fake_star
+
 def make_fake_star(az = None, alt = None):
 	if az is None or alt is None: # no args
 		az, alt = input("Define fake star by Az Alt: ").strip().split().map(float)
 
-	global fake_star
+	#global fake_star
 	fake_star = ephem.FixedBody()
-	fake_star._ra, fake_star._dec = observer.radec_of(az, alt)
+	fake_star._ra, fake_star._dec = config.observer.radec_of(az, alt)
 	fake_star._epoch = ephem.J2000
 	#fake_star.compute( observer )
 	#print( cano.az, cano.alt)
+
+	config.fake_star = fake_star
 	return fake_star
+
+config.fake_star = make_fake_star(0, 0) # defined in config.py as None
+
 
 ################## ephem: search
 
@@ -197,24 +211,24 @@ def search_0(target):
 		print("Other stars catalog: " + YBS2[star][0])
 		thing = YBS2[star][2]
 	elif target == "fake": # fake body, defined by az/alt
-		thing = fake_star
+		thing = config.fake_star
 	elif target[0] == '#' and target[1:].isnumeric() : # landmarks, defined by az/alt
 		#landmarks = gather_landmarks(landmarks_file)
 		landmark = int(target[1:].strip())-1
-		return( landmarks[landmark]["Az"], landmarks[landmark]["Alt"] )
+		return( config.landmarks[landmark]["Az"], config.landmarks[landmark]["Alt"] )
 	else: return(None)
 
 	if thing is None: return (None)
 
-	return(compute(thing, observer))
+	return(compute(thing, config.observer))
 
 # actual search function called from the UI
 def search():
-	global same # TODO: the error!
-	global same_str
+	#global same # TODO: the error!
+	#global same_str
 
 	while True:
-		same_str_builder = ": " + same_str if same_str != "" else ""
+		same_str_builder = ": " + config.same_str if config.same_str != "" else ""
 		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 		if location == "named":
@@ -224,7 +238,7 @@ def search():
 			print_available_stars()
 			continue
 		if location == "landmakrs":
-			print_landmarks()
+			load_landmarks.print_landmarks()
 			continue
 
 		if location == "same": location = same
@@ -246,10 +260,10 @@ def search():
 				alert = input("! Below horizon! Are you sure? [*/yes] ")
 				if alert != "yes":
 					continue
-			same_str = ""
+			config.same_str = ""
 
 		az, alt = location[0], location[1]
 		print("Arbitrary location Az: " + str(az) + ", Alt: " + str(alt))
 
-		same = temp
+		config.same = temp
 		return (az, alt)

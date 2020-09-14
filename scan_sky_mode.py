@@ -17,7 +17,11 @@ import math
 import ephem
 from ephem import *
 
-from set_functions import *
+# global variables
+import config
+from config import *
+
+from print_functions import * # soon to be implemented...
 from backup_location import *
 from move_function import *
 from move_1_step import *
@@ -70,8 +74,8 @@ def scan_sky():
 	# move half the scaing area, down and left, from the center of the area
 	steps = int(math.ceil(amount_total/amount_step))
 	print("Steps / row: " + str(steps))
-	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ,
-		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT,
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = config.speed_Az,
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = config.speed_Alt,
 		 update_position = False)
 
 	#sleep (pause) # wait to spot something
@@ -90,8 +94,8 @@ def scan_sky():
 			else: direction_az = "left"
 
 
-			move(amount_az = amount_step, direction_az = direction_az, speed_az = SPEED_AZ,
-				amount_alt = 0, direction_alt = "up", speed_alt = SPEED_ALT,
+			move(amount_az = amount_step, direction_az = direction_az, speed_az = config.SPEED_AZ,
+				amount_alt = 0, direction_alt = "up", speed_alt = config.SPEED_ALT,
 				update_position = False)
 
 			#sleep (pause) # wait to spot something
@@ -109,8 +113,8 @@ def scan_sky():
 	# return to original location
 	# I am now in the top-right corner of the scanned area
 	# move half the scaing area, down and left, from the top-right corner
-	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = SPEED_AZ,
-		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = SPEED_ALT,
+	move(amount_az = -amount_step*steps/2, direction_az = "right", speed_az = config.SPEED_AZ,
+		 amount_alt = -amount_step*steps/2, direction_alt = "up", speed_alt = config.SPEED_ALT,
 		 update_position = False)
 	#move(amount_az = -amount_total/2, direction_az = "right", speed_az = 1.0,
 		 #amount_alt = -amount_total/2, direction_alt = "up", speed_alt = 1.0,
