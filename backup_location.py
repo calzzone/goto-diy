@@ -32,7 +32,7 @@ def save_location():
 		f.write(line)
 
 def recover_last_location():
-	with open(lconfig.ast_location_file) as f:
+	with open(config.last_location_file) as f:
 		# Look at each line of the file
 		for line in f:
 			line=line.strip()
