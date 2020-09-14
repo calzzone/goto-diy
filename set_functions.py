@@ -14,6 +14,10 @@ from readchar import readkey
 import string
 import math
 
+# Raspberry Pi GPIO access
+import RPi.GPIO as GPIO
+#GPIO.setmode(GPIO.BCM)
+
 import ephem
 from ephem import *
 
@@ -22,6 +26,7 @@ import config
 from config import *
 
 import backup_location # for save_location() in set_location()
+import ephem_wrapper
 
 ################## setup functions
 
@@ -73,7 +78,7 @@ def set_location():
 	#global altitude
 
 	#azimuth, altitude = map(float, input("Current Az Alt: ").split())
-	new_azimuth, new_altitude = search()
+	new_azimuth, new_altitude = ephem_wrapper.search()
 	if (new_azimuth == None or new_altitude == None):
 		return()
 

@@ -76,7 +76,7 @@ def print_observer(_observer_name = None, _observer=None):
 	print ( "Current observing location: " + _observer_name + ":")
 	print ( "Lat: " + str(_observer.lat) + " Lon: " + str(_observer.lon) +
 			" Elevation: " + str(_observer.elevation) + "\n" +
-			"Pressure: " + str(_observer.pressure) + " Temp: " + str(+observer.temp) )
+			"Pressure: " + str(_observer.pressure) + " Temp: " + str(_observer.temp) )
 
 # observers_file = "observers.txt" # in config
 # observer_name = "cluj" # default observer; has to be present in observers_file # in config

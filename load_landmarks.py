@@ -32,10 +32,10 @@ def gather_landmarks(_landmarks_file):
 
 # Print global landmarks
 def print_landmarks():
-	print ("Current landmarks file: " + landmarks_file + ":")
+	print ("Current landmarks file: " + config.landmarks_file + ":")
 
 	i = 0
-	for landmark in landmarks:
+	for landmark in config.landmarks:
 		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
 		i += 1
 

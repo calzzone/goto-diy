@@ -72,10 +72,10 @@ GPIO.setup(MODE_ALT, GPIO.OUT)
 GPIO.output(MODE_ALT, MICROSTEP_RESOLUTION[ microstep_alt ])
 #print ("Step size (Alt): " + str( 360.0 / steps_per_rotation_ALT ) + " degrees. Microstepping: " + microstep_alt + " .")
 
-SPEED_ALT = 10.0 # deg / second
+speed_ALT = 10.0 # deg / second
 
-delay_ALT = 360.0 / (SPEED_ALT * steps_per_rotation_ALT * 2.0)
-#print ("Time to complete 360 deg rotation (Alt): " +  str(360.0/SPEED_ALT) + " seconds.")
+delay_ALT = 360.0 / (speed_ALT * steps_per_rotation_ALT * 2.0)
+#print ("Time to complete 360 deg rotation (Alt): " +  str(360.0/speed_ALT) + " seconds.")
 #print ("Delay (Alt): " + str(delay_ALT) + " seconds.\n")
 #delay_ALT = 0.005 # failsafe value
 
