@@ -25,6 +25,7 @@ from ephem import *
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 # global variables
 import config
