@@ -31,6 +31,9 @@ from move_1_deg import *
 
 ################## track
 
+def suicide(*args):
+	os.kill(args[0], signal.SIGINT)
+
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
 # meanwhile, the user can manually fine-tune the position of the telescope so the actual position coresponds to the position the software thinks it should be pointing to
 
@@ -39,8 +42,9 @@ from move_1_deg import *
 def wait_for(timeout):
 	pid = os.getpid()
 	sig = signal.SIGINT
-	timer = Timer(timeout, lambda: os.kill(pid, sig))
-	print(f"Auto-tracking with maual control. Press 'c' to cancel, ? / ! to get stauts. Next move in {timeout} seconds. ")
+	#timer = Timer(timeout, lambda: os.kill(pid, sig))
+	timer = Timer(timeout, suicide, pid)
+	print(f"Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in {timeout} seconds. ")
 	timer.start()  # spawn a worker thread to interrupt us later
 	#paused = False
 	while True:

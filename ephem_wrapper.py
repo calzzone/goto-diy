@@ -151,8 +151,8 @@ def compute(thing, observer):
 
 def make_fake_star(az = None, alt = None):
 	if az is None or alt is None: # no args
-		location = input("Define fake star by Az Alt (empty to use current location, c to cancel): ").strip()
-		if location == "c": config.fake_star
+		location = input(config.TColors.italic + "Define fake star by Az Alt (leave empty to use current location, c to cancel): " + config.TColors.normal).strip()
+		if location == "c": return(config.fake_star)
 		elif location == "": az, alt = config.azimuth, config.altitude
 		else: az, alt = location.split().map(float)
 
@@ -164,6 +164,7 @@ def make_fake_star(az = None, alt = None):
 	#print( cano.az, cano.alt)
 
 	config.fake_star = fake_star
+	print ("Fake star defined at Az " + str(az) + " Alt " + str(alt))
 	return fake_star
 
 config.fake_star = make_fake_star(0, 0) # defined in config.py as None
