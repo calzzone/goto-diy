@@ -49,10 +49,13 @@ def wait_for(timeout):
 	print(f"Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in {timeout} seconds. ")
 
 	# spawn many delayed prints, one for every second in timeout
-	for i in range(int(round(timeout, 0))):
-		#timer = Timer(i, coundown, (timeout-i))
-		timer = Timer(i, lambda: print(f"Next move in {timeout-i} seconds...\n"))
-		timer.start()
+	#timers = [Timer(i, lambda: print(f"Next move in {timeout-i} seconds...\n")) for i in range(int(round(timeout, 0)))]
+	timers = [Timer(i, lambda: print(f"Next move in {timeout-i} seconds...\n")) for i in range(5)]
+	timers.map(start)
+	#for i in range(int(round(timeout, 0))):
+	#	#timer = Timer(i, coundown, (timeout-i))
+	#	timer = Timer(i, lambda: print(f"Next move in {timeout-i} seconds...\n"))
+	#	timer.start()
 
 
 	#paused = False
