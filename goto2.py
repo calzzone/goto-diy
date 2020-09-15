@@ -63,13 +63,13 @@ def quit_nicely():
 
 def show_options():
 	print ("\nAvailable options:")
-	print ("0: Quit nicely")
-	print ("1-4: Operating modes: track (1), move (2), manual drive (3) , scan sky area (4)")
-	print ("5-9: Set: speed (5), microstepping (6), track refresh interval (7), observer (8), current coordinates (9)")
-	print ("10: Recover last recoded coordinates")
-	print ("18 19 20: Print: observer (18), current coordinates (19), status (20)")
-	print ("21-23: Print: named stars (21), all available stars in YBS (22), landmakrs (23)")
-	print ("31: Make fake star")
+	print (TColors.red_on_black + "0:" + TColors.normal + " Quit nicely")
+	print (TColors.red_on_black + "1-4:" + TColors.blue_on_black + " Operating modes: " + TColors.normal + "track (1), move (2), manual drive (3) , scan sky area (4)")
+	print (TColors.red_on_black + "5-9:" + TColors.blue_on_black + " Set: " + TColors.normal + "speed (5), microstepping (6), track refresh interval (7), observer (8), current coordinates (9)")
+	print (TColors.red_on_black + "10:" + TColors.normal + " Recover last recoded coordinates")
+	print (TColors.red_on_black + "18 19 20:" + TColors.blue_on_black + " Print: " + TColors.normal + "observer (18), current coordinates (19), status (20)")
+	print (TColors.red_on_black + "21-23:" + TColors.blue_on_black + " Print: " + TColors.normal + "named stars (21), all available stars in YBS (22), landmakrs (23)")
+	print (TColors.red_on_black + "31:" + TColors.normal + " Make fake star")
 
 def switch_main(option):
 	switcher = {

@@ -56,7 +56,8 @@ def set_observer(new_observer = None):
 	while True:
 		if with_arg: # if new_observer is None:
 			print ("Currently available obsever locations as defined in " +
-			config.observers_file + ": " + ", ".join(config.observers.keys()) + ". ")
+				TColors.orange_on_black + config.observers_file + TColors.normal + ": " +
+				TColors.orange_on_black + ", ".join(config.observers.keys()) + TColors.normal + ". ")
 			new_observer = input("Type the name of the observer location or 'c' to cancel: ")
 
 		if new_observer == "c": return ()
@@ -73,10 +74,12 @@ def print_observer(_observer_name = None, _observer=None):
 	if _observer_name == None: _observer_name = config.observer_name
 	if _observer == None: _observer = config.observer
 
-	print ( "Current observing location: " + _observer_name + ":")
-	print ( "Lat: " + str(_observer.lat) + " Lon: " + str(_observer.lon) +
-			" Elevation: " + str(_observer.elevation) + "\n" +
-			"Pressure: " + str(_observer.pressure) + " Temp: " + str(_observer.temp) )
+	print ( "Current observing location: " + TColors.orange_on_black + _observer_name + TColors.normal + ":")
+	print ( " Lat: " + TColors.orange_on_black + str(_observer.lat) + TColors.normal +
+			" Lon: " + TColors.orange_on_black + str(_observer.lon) + TColors.normal +
+			" Elevation: " + TColors.orange_on_black + str(_observer.elevation) + TColors.normal + "\n" +
+			"Pressure: " + TColors.orange_on_black + str(_observer.pressure) + TColors.normal +
+			" Temp: " + TColors.orange_on_black + str(_observer.temp) + TColors.normal )
 
 # observers_file = "observers.txt" # in config
 # observer_name = "cluj" # default observer; has to be present in observers_file # in config

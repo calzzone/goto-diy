@@ -1,6 +1,38 @@
 
 ## Settings file
 
+
+# Print in color
+# https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-python
+
+class bcolors:
+	NORMAL = 	'\033[0m'
+	ENDC = 		'\033[0m'
+	HEADER = 	'\033[95m'
+	OKBLUE = 	'\033[94m'
+	OKGREEN = 	'\033[92m'
+	WARNING = 	'\033[93m'
+	FAIL = 		'\033[91m'
+	BOLD = 		'\033[1m'
+	UNDERLINE = '\033[4m'
+
+class TColors:
+	normal = 			'\x1b[0m'
+	red_on_black = 		'\x1b[0;31;40m'
+	green_on_black = 	'\x1b[0;32;40m'
+	orange_on_black = 	'\x1b[0;33;40m'
+	blue_on_black = 	'\x1b[0;34;40m'
+	purple_on_black = 	'\x1b[0;35;40m'
+	yellow_on_black = 	'\x1b[0;36;40m'
+	white_on_black = 	'\x1b[0;37;40m'
+
+# print(f"{bcolors.WARNING}Warning: No active frommets remain. Continue?{bcolors.ENDC}")
+# print('\x1b[6;30;42m' + 'Success!' + '\x1b[0m')
+
+# examples: https://i.stack.imgur.com/6otvY.png
+
+
+
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
