@@ -31,6 +31,7 @@ from move_1_deg import *
 
 ################## track
 
+# Countdown in tracking mode.
 def suicide(*args):
 	os.kill(args[0], signal.SIGINT)
 
@@ -43,7 +44,7 @@ def wait_for(timeout):
 	pid = os.getpid()
 	sig = signal.SIGINT
 	#timer = Timer(timeout, lambda: os.kill(pid, sig))
-	timer = Timer(timeout, suicide, pid)
+	timer = Timer(timeout, suicide, [pid])
 	print(f"Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in {timeout} seconds. ")
 	timer.start()  # spawn a worker thread to interrupt us later
 	#paused = False
