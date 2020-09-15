@@ -158,8 +158,8 @@ def make_fake_star(az = None, alt = None):
 
 	#global fake_star
 	fake_star = ephem.FixedBody()
+	#fake_star._epoch = ephem.J2000
 	fake_star._ra, fake_star._dec = config.observer.radec_of(az, alt)
-	fake_star._epoch = ephem.J2000
 	#fake_star.compute( observer )
 	#print( cano.az, cano.alt)
 
