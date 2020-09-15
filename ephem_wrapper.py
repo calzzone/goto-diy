@@ -40,21 +40,26 @@ list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
 # Prints all available named stars, with the posibility to search / filter.
-# Cancel term is "~". Leave empty to list all.
+# $term filters by term at the begining. Cancel term is "~". Leave empty to list all.
 def print_named_stars():
 	while True:
 		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
-		stars = [star for star in list_of_named_stars if filter in star]
+		elif filter.startswith("$"): # starts with filter term
+			stars = [star for star in list_of_named_stars if star.startswith(filter[1:])]
+		else:
+			stars = [star for star in list_of_named_stars if filter in star]
 		print(", ".join(stars))
 
-# TODO: A lot of them: have some way of printing in chunks
 def print_available_stars():
 	print("List of all available stars:")
 	while True:
 		filter = input("List all available stars in the YBS catalogue, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
-		stars = [star for star in list_of_stars_YBS if filter in star]
+		elif filter.startswith("$"): # starts with filter term
+			stars = [star for star in list_of_stars_YBS if star.startswith(filter[1:])]
+		else:
+			stars = [star for star in list_of_stars_YBS if filter in star]
 		print(", ".join(stars))
 
 
