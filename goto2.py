@@ -1,5 +1,6 @@
 ### This is the main code file f my telescope control software.
 
+print (TColors.bold + "\n ====== DIY GoTo Telesope Control ===== \n" + TColors.normal)
 
 # https://git.nexlab.net/astronomy/skylived/tree/bd59190026d9d95b39983f8a0106a7e17023aee8/DecraDB/xephemdb
 # https://github.com/Alex-Broughton/StarAtlas
@@ -58,11 +59,11 @@ from track_mode import *
 
 def quit_nicely():
 	GPIO.cleanup()
-	print ("good riddance!")
+	print (TColors.italic + "\nGood riddance!\n" + TColors.normal)
 
 
 def show_options():
-	print ("\nAvailable options:")
+	print (TColors.bold + "\nAvailable options:" + TColors.normal)
 	print (TColors.orange_on_black + "0:" + TColors.normal + " Quit nicely")
 	print (TColors.orange_on_black + "1-4:" + TColors.blue_on_black + " Operating modes: " + TColors.normal + "track " + TColors.orange_on_black + "(1)" + TColors.normal + ", move " + TColors.orange_on_black + "(2)" + TColors.normal + ", manual drive " + TColors.orange_on_black + "(3)" + TColors.normal + " , scan sky area " + TColors.orange_on_black + "(4)" + TColors.normal)
 	print (TColors.orange_on_black + "5-9:" + TColors.blue_on_black + " Set: " + TColors.normal + "speed " + TColors.orange_on_black + "(5)" + TColors.normal + ", microstepping " + TColors.orange_on_black + "(6)" + TColors.normal + ", track refresh interval " + TColors.orange_on_black + "(7)" + TColors.normal + ", observer " + TColors.orange_on_black + "(8)" + TColors.normal + ", current coordinates " + TColors.orange_on_black + "(9)" + TColors.normal)
@@ -105,11 +106,11 @@ def switch_main(option):
 def main():
 	recover_last_location()
 	show_options()
-	option = int(input("what is my purpose? "))
+	option = int(input(TColors.italic + "what is my purpose? " + TColors.normal))
 	while option != 0:
 		switch_main(option)
 		show_options()
-		option = int(input("what is my purpose? "))
+		option = int(input(TColors.italic + "what is my purpose? " + TColors.normal))
 
 	#GPIO.cleanup()
 	quit_nicely()

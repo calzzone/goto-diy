@@ -25,6 +25,8 @@ class TColors:
 	purple_on_black = 	'\x1b[0;35;40m'
 	yellow_on_black = 	'\x1b[0;36;40m'
 	white_on_black = 	'\x1b[0;37;40m'
+	italic = 			'\x1b[3;37;0m'
+	bold = 				'\x1b[1;37;0m'
 
 # print(f"{bcolors.WARNING}Warning: No active frommets remain. Continue?{bcolors.ENDC}")
 # print('\x1b[6;30;42m' + 'Success!' + '\x1b[0m')
