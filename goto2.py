@@ -13,7 +13,7 @@ import config
 from config import *
 
 # Welcome message
-print ("\x1b[1;37;42m" + "\n ====== DIY GoTo Telesope Control ===== \n" + TColors.normal)
+print ("\n\x1b[1;37;42m ====== DIY GoTo Telesope Control ===== " + TColors.normal + " \n")
 
 
 from load_observers import *
@@ -94,10 +94,12 @@ def main():
 	recover_last_location()
 	show_options()
 	option = int(input(TColors.italic + "What is my purpose? " + TColors.normal))
+	print('\n')
 	while option != 0:
 		switch_main(option)
 		show_options()
 		option = int(input(TColors.italic + "What is my purpose? " + TColors.normal))
+		print('\n')
 
 	#GPIO.cleanup()
 	quit_nicely()
