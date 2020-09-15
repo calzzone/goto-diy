@@ -33,7 +33,7 @@ from move_1_deg import *
 
 # Countdown in tracking mode.
 def countdown(*args):
-	print("Next move in " + str(args[0]) + " seconds...", end=" ")
+	print("Next move in " + str(args[0]) + " seconds...", end=" ", flush = True)
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
 # meanwhile, the user can manually fine-tune the position of the telescope so the actual position coresponds to the position the software thinks it should be pointing to
