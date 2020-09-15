@@ -36,7 +36,8 @@ def countdown(*args):
 	#print("Next move in " + str(args[0]) + " seconds...", end=" ", flush = True)
 
 	sys.stdout.write("\r")
-	sys.stdout.write("Next move in {:2d} seconds ... ".format(args[0]))
+	#sys.stdout.write("Next move in {:2d} seconds ... ".format(args[0]))
+	prsys.stdout.write(int("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(args[0]) + " seconds. ")
 	sys.stdout.flush()
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
@@ -49,11 +50,10 @@ def wait_for(timeout):
 	sig = signal.SIGINT
 	timer = Timer(timeout, lambda: os.kill(pid, sig))
 	timer.start()  # spawn a worker thread to interrupt us later
-	print("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(timeout) + " seconds. ")
+	#print("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(timeout) + " seconds. ")
 
 	# spawn many delayed prints, one for every second in timeout
-	timers = [Timer(i, countdown, (timeout-i, i, timeout)) for i in range(int(round(timeout, 0))-1)]
-	#timers = [Timer(i, lambda: print("Next move in " + str(timeout-i) + " seconds...")) for i in range(int(round(timeout, 0)))]
+	timers = [Timer(i, countdown, (timeout-i, i, timeout)) for i in range(int(round(timeout, 0)))]
 	for t in timers: t.start()
 
 
@@ -62,11 +62,13 @@ def wait_for(timeout):
 		key = readkey()
 		#print(f"received {k!r}")
 		if key == 'c':
-			print("Exiting tracking mode...")
+			#print("Exiting tracking mode...")
 			timer.cancel()  # cancel the timer
 			for t in timers:
 				if t.is_alive():
 					t.cancel()
+
+			print("\n")
 			return (True)
 		#elif key == 'p' and not paused:
 			#print("Pausing tracking mode...")
@@ -128,7 +130,7 @@ def track():
 	target_az, target_alt = location_coord[0], location_coord[1]
 
 
-	# step 2: track: move, wait for ... seconds while accepting keybord input, search again
+	# step 2: track: move, wait for X seconds while accepting keybord input, search again
 	while not (target_az < 0 or target_az >= 360 or target_alt < 0 or target_alt > 90):
 		#print("c to cancel, ? to get status.")
 		#key = getkey()
