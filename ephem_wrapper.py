@@ -1,16 +1,8 @@
+# Functions relating to the ephem library, most importantly serching for objects
+# in the ephem database or custom .edb files.
 
-# from time import sleep
-# from getkey import getkey, keys
 from datetime import datetime
-#
-# import os
-# #print (os.path.abspath(os.getcwd()))
-#
-# import signal
-# import sys
-# from threading import Timer
-# from readchar import readkey
-#
+
 import string
 import math
 #
@@ -184,7 +176,7 @@ config.fake_star = make_fake_star(0, 0) # defined in config.py as None
 def find_body_by_name(name, catalog):
 	for body in catalog:
 		if body[0] == name:
-			print(body)
+			print("Fixed body: " + body[0] + " (" + body[1] + ")")
 			return body[2]
 	return (None)
 
@@ -194,6 +186,8 @@ def find_body_by_name(name, catalog):
 # TODO: have better flexibility when searching
 
 def search_0(target):
+	if target.lower() in ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn", "uranus", "neptune"]:
+		print("Targetting ephem solar system body: " + string.capwords(target))
 	if target.lower() == "sun": thing = ephem.Sun()
 	elif target.lower() == "moon": thing = ephem.Moon()
 	elif target.lower() == "mercury": thing = ephem.Mercury()
@@ -221,16 +215,19 @@ def search_0(target):
 		thing = find_body_by_name(name, ugc)
 	elif target.lower() in list_of_ephem_stars:
 		thing = ephem.star(string.capwords(target))
+		print("Star in ephem database: " + string.capwords(target))
 	elif target.lower().strip() in list_of_stars_YBS:
 		YBS2 = read_database("YBS2.edb")
 		star = list_of_stars_YBS.index( target.lower().strip() )
-		print("Other stars catalog: " + YBS2[star][0])
+		print("Bright stars catalog (YBS): " + YBS2[star][0] + " (" + YBS2[star][1] + ")")
 		thing = YBS2[star][2]
 	elif target == "fake": # fake body, defined by az/alt
+		print("Targetting the fake star...")
 		thing = config.fake_star
 	elif target[0] == '#' and target[1:].isnumeric() : # landmarks, defined by az/alt
 		#landmarks = gather_landmarks(landmarks_file)
 		landmark = int(target[1:].strip())-1
+		print("Targetting landmark: #" + str(landmark+1) + config.landmarks[landmark]["name"])
 		return( config.landmarks[landmark]["Az"], config.landmarks[landmark]["Alt"] )
 	else: return(None)
 
