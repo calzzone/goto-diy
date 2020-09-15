@@ -33,8 +33,7 @@ from move_1_deg import *
 
 # Countdown in tracking mode.
 def countdown(*args):
-	print("Next move in " + str(args[0]) + " seconds...")
-	#if args[0] <= 1: os.kill(args[1], signal.SIGINT)
+	print("Next move in " + str(args[0]) + " seconds...", end=" ")
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
 # meanwhile, the user can manually fine-tune the position of the telescope so the actual position coresponds to the position the software thinks it should be pointing to
@@ -46,10 +45,10 @@ def wait_for(timeout):
 	sig = signal.SIGINT
 	timer = Timer(timeout, lambda: os.kill(pid, sig))
 	timer.start()  # spawn a worker thread to interrupt us later
-	print(f"Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in {timeout} seconds. ")
+	print("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(timeout) + " seconds. ")
 
 	# spawn many delayed prints, one for every second in timeout
-	timers = [Timer(i, countdown, (timeout-i, pid)) for i in range(int(round(timeout, 0)))]
+	timers = [Timer(i, countdown, timeout-i) for i in range(int(round(timeout, 0)))]
 	#timers = [Timer(i, lambda: print("Next move in " + str(timeout-i) + " seconds...")) for i in range(int(round(timeout, 0)))]
 	for t in timers: t.start()
 
