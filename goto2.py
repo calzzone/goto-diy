@@ -121,4 +121,4 @@ if __name__ == '__main__':
 
 
 #GPIO.cleanup()
-quit_nicely()
+#quit_nicely()

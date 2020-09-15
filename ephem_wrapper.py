@@ -39,15 +39,23 @@ list_of_stars_YBS = open("YBS2.txt", "r").readlines()
 list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
-# TODO: add some interactivity
+# Prints all available named stars, with the posibility to search / filter.
+# Cancel term is "~". Leave empty to list all.
 def print_named_stars():
-	print("List of available named stars:")
-	print(", ".join(list_of_named_stars))
+	while True:
+		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
+		if filter == "~": return()
+		stars = [star for star in list_of_named_stars if filter in star]
+		print(", ".join(stars))
 
 # TODO: A lot of them: have some way of printing in chunks
 def print_available_stars():
 	print("List of all available stars:")
-	print(", ".join(list_of_stars_YBS))
+	while True:
+		filter = input("List all available stars in the YBS catalogue, type filter or ~ to cancel:").strip().lower()
+		if filter == "~": return()
+		stars = [star for star in list_of_stars_YBS if filter in star]
+		print(", ".join(stars))
 
 
 
@@ -146,7 +154,10 @@ def compute(thing, observer):
 
 def make_fake_star(az = None, alt = None):
 	if az is None or alt is None: # no args
-		az, alt = input("Define fake star by Az Alt: ").strip().split().map(float)
+		location = input("Define fake star by Az Alt (empty to use current location, c to cancel): ").strip()
+		if location == "c": config.fake_star
+		elif location == "": az, alt = config.azimuth, config.altitude
+		else: az, alt = location.split().map(float)
 
 	#global fake_star
 	fake_star = ephem.FixedBody()
