@@ -36,8 +36,8 @@ def countdown(*args):
 	#print("Next move in " + str(args[0]) + " seconds...", end=" ", flush = True)
 
 	sys.stdout.write("\r")
-    sys.stdout.write("Next move in {:2d} seconds ... ".format(args[0]))
-    sys.stdout.flush()
+	sys.stdout.write("Next move in {:2d} seconds ... ".format(args[0]))
+	sys.stdout.flush()
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
 # meanwhile, the user can manually fine-tune the position of the telescope so the actual position coresponds to the position the software thinks it should be pointing to
