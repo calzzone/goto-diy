@@ -37,7 +37,7 @@ def countdown(*args):
 
 	sys.stdout.write("\r")
 	#sys.stdout.write("Next move in {:2d} seconds ... ".format(args[0]))
-	prsys.stdout.write("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(args[0]) + " seconds. ")
+	sys.stdout.write("Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in " + str(args[0]) + " seconds. ")
 	sys.stdout.flush()
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
