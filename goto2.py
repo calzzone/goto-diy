@@ -1,36 +1,20 @@
 ### This is the main code file f my telescope control software.
 
-print (TColors.bold + "\n ====== DIY GoTo Telesope Control ===== \n" + TColors.normal)
-
 # https://git.nexlab.net/astronomy/skylived/tree/bd59190026d9d95b39983f8a0106a7e17023aee8/DecraDB/xephemdb
 # https://github.com/Alex-Broughton/StarAtlas
-
-from time import sleep
-from getkey import getkey, keys
-from datetime import datetime
-
-import os
-#print (os.path.abspath(os.getcwd()))
-
-import signal
-import sys
-from threading import Timer
-from readchar import readkey
-
-import string
-import math
-
-import ephem
-from ephem import *
 
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
-# global variables
+# Global variables
 import config
 from config import *
+
+# Welcome message
+print (TColors.bold + "\n ====== DIY GoTo Telesope Control ===== \n" + TColors.normal)
+
 
 from load_observers import *
 config.observers = gather_observers(config.observers_file)
@@ -40,22 +24,25 @@ from load_landmarks import *
 config.landmarks = gather_landmarks(config.landmarks_file)
 
 from backup_location import * # CRITICAL: before set_functions
-from ephem_wrapper import *
-
 from set_functions import * # CRITICAL: after backup_location
-from move_function import *
-from move_1_step import *
-from move_1_deg import *
+
+from ephem_wrapper import * # here: for printing names of stars
+
+#from move_function import * # not directly
+#from move_1_step import * # not directly
+#from move_1_deg import * # not directly
+
+# Operating modes
+from track_mode import *
+from go_to_mode import *
 from manual_drive_mode import *
 from scan_sky_mode import *
-from go_to_mode import *
-from track_mode import *
 
 
 
 
 
-################## main
+##################
 
 def quit_nicely():
 	GPIO.cleanup()
@@ -117,9 +104,6 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
-
-
 
 #GPIO.cleanup()
 #quit_nicely()
