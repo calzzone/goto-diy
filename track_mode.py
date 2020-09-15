@@ -61,7 +61,9 @@ def wait_for(timeout):
 		if key == 'c':
 			print("Exiting tracking mode...")
 			timer.cancel()  # cancel the timer
-			for t in timers: if t.is_alive(): t.cancel()
+			for t in timers:
+				if t.is_alive():
+					t.cancel()
 			return (True)
 		#elif key == 'p' and not paused:
 			#print("Pausing tracking mode...")
