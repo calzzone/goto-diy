@@ -63,13 +63,13 @@ def quit_nicely():
 
 def show_options():
 	print ("\nAvailable options:")
-	print (TColors.red_on_black + "0:" + TColors.normal + " Quit nicely")
-	print (TColors.red_on_black + "1-4:" + TColors.blue_on_black + " Operating modes: " + TColors.normal + "track (1), move (2), manual drive (3) , scan sky area (4)")
-	print (TColors.red_on_black + "5-9:" + TColors.blue_on_black + " Set: " + TColors.normal + "speed (5), microstepping (6), track refresh interval (7), observer (8), current coordinates (9)")
-	print (TColors.red_on_black + "10:" + TColors.normal + " Recover last recoded coordinates")
-	print (TColors.red_on_black + "18 19 20:" + TColors.blue_on_black + " Print: " + TColors.normal + "observer (18), current coordinates (19), status (20)")
-	print (TColors.red_on_black + "21-23:" + TColors.blue_on_black + " Print: " + TColors.normal + "named stars (21), all available stars in YBS (22), landmakrs (23)")
-	print (TColors.red_on_black + "31:" + TColors.normal + " Make fake star")
+	print (TColors.orange_on_black + "0:" + TColors.normal + " Quit nicely")
+	print (TColors.orange_on_black + "1-4:" + TColors.blue_on_black + " Operating modes: " + TColors.normal + "track " + TColors.orange_on_black + "(1)" + TColors.normal + ", move " + TColors.orange_on_black + "(2)" + TColors.normal + ", manual drive " + TColors.orange_on_black + "(3)" + TColors.normal + " , scan sky area " + TColors.orange_on_black + "(4)" + TColors.normal)
+	print (TColors.orange_on_black + "5-9:" + TColors.blue_on_black + " Set: " + TColors.normal + "speed " + TColors.orange_on_black + "(5)" + TColors.normal + ", microstepping " + TColors.orange_on_black + "(6)" + TColors.normal + ", track refresh interval " + TColors.orange_on_black + "(7)" + TColors.normal + ", observer " + TColors.orange_on_black + "(8)" + TColors.normal + ", current coordinates " + TColors.orange_on_black + "(9)" + TColors.normal)
+	print (TColors.orange_on_black + "10:" + TColors.normal + " Recover last recoded coordinates")
+	print (TColors.orange_on_black + "18 19 20:" + TColors.blue_on_black + " Print: " + TColors.normal + "observer " + TColors.orange_on_black + "(18)" + TColors.normal + ", current coordinates " + TColors.orange_on_black + "(19)" + TColors.normal + ", status " + TColors.orange_on_black + "(20)" + TColors.normal)
+	print (TColors.orange_on_black + "21-23:" + TColors.blue_on_black + " Print: " + TColors.normal + "named stars " + TColors.orange_on_black + "(21)" + TColors.normal + ", all available stars in YBS " + TColors.orange_on_black + "(22)" + TColors.normal + ", landmakrs " + TColors.orange_on_black + "(23)" + TColors.normal)
+	print (TColors.orange_on_black + "31:" + TColors.normal + " Make fake star")
 
 def switch_main(option):
 	switcher = {

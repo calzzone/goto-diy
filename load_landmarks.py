@@ -32,11 +32,14 @@ def gather_landmarks(_landmarks_file):
 
 # Print global landmarks
 def print_landmarks():
-	print ("Current landmarks file: " + config.landmarks_file + ":")
+	print ("Current landmarks file: " + TColors.orange_on_black + config.landmarks_file + TColors.normal + ":")
 
 	i = 0
 	for landmark in config.landmarks:
-		print(str(i+1) + ": " + landmark["name"] + ": Az=" + str(landmark["Az"]) + ": Alt=" + str(landmark["Alt"]))
+		print(str(i+1) + ": " +
+			TColors.orange_on_black + landmark["name"] + TColors.normal +
+			": Az=" + TColors.blue_on_black + str(landmark["Az"]) + TColors.normal +
+			": Alt=" + TColors.blue_on_black + str(landmark["Alt"]) + TColors.normal)
 		i += 1
 
 #####

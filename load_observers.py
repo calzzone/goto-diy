@@ -78,7 +78,7 @@ def print_observer(_observer_name = None, _observer=None):
 	print ( " Lat: " + TColors.orange_on_black + str(_observer.lat) + TColors.normal +
 			" Lon: " + TColors.orange_on_black + str(_observer.lon) + TColors.normal +
 			" Elevation: " + TColors.orange_on_black + str(_observer.elevation) + TColors.normal + "\n" +
-			"Pressure: " + TColors.orange_on_black + str(_observer.pressure) + TColors.normal +
+			" Pressure: " + TColors.orange_on_black + str(_observer.pressure) + TColors.normal +
 			" Temp: " + TColors.orange_on_black + str(_observer.temp) + TColors.normal )
 
 # observers_file = "observers.txt" # in config
