@@ -32,7 +32,7 @@ from move_1_deg import *
 ################## track
 
 # Countdown in tracking mode.
-def coundown(*args):
+def countdown(*args):
 	print(f"Next move in {args[0]} seconds")
 
 
