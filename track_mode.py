@@ -32,11 +32,8 @@ from move_1_deg import *
 ################## track
 
 # Countdown in tracking mode.
-def suicide(*args):
-	if args[1] <= 0:
-		os.kill(args[0], signal.SIGINT)
-	else:
-		print(f"Next move in {args[1]} seconds")
+def coundown(*args):
+	print(f"Next move in {args[0]} seconds")
 
 
 # in tracking moe,teh user searches for a body, the program goes there and then recomputes its coordonates and moves accordingly every few seconds
@@ -47,13 +44,17 @@ def suicide(*args):
 def wait_for(timeout):
 	pid = os.getpid()
 	sig = signal.SIGINT
-	#timer = Timer(timeout, lambda: os.kill(pid, sig))
-	for i in range(int(round(timeout, 0))):
-		timer = Timer(i, suicide, (pid, timeout-i))
-		timer.start()
-	#timer = Timer(timeout, suicide, [pid])
+	timer = Timer(timeout, lambda: os.kill(pid, sig))
+	timer.start()  # spawn a worker thread to interrupt us later
 	print(f"Auto-tracking with manual control. Press 'c' to cancel, ? / ! to get status. Next move in {timeout} seconds. ")
-	#timer.start()  # spawn a worker thread to interrupt us later
+
+	# spawn many delayed prints, one for every second in timeout
+	for i in range(int(round(timeout, 0))):
+		#timer = Timer(i, coundown, (timeout-i))
+		timer = Timer(i, lambda: print(f"Next move in {timeout-i} seconds...\n"))
+		timer.start()
+
+
 	#paused = False
 	while True:
 		key = readkey()
