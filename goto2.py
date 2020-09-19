@@ -99,19 +99,19 @@ def switch_main(option):
 def main():
 
 	#sys.stdout.write("\r")
-	#sys.stdout.write(TColors.italic + "Loading observers ... " + TColors.normal)
-	#sys.stdout.flush()
+	sys.stdout.write(TColors.italic + "Loading observers ... " + TColors.normal)
+	sys.stdout.flush()
 	config.observers = gather_observers(config.observers_file)
 	config.observer, config.observer_name = set_observer(config.observer_name)
 
-	#sys.stdout.write("\r")
-	#sys.stdout.write(TColors.italic + "Loading landmarks ... " + TColors.normal)
-	#sys.stdout.flush()
+	sys.stdout.write("\r")
+	sys.stdout.write(TColors.italic + "Loading landmarks ... " + TColors.normal)
+	sys.stdout.flush()
 	config.landmarks = gather_landmarks(config.landmarks_file)
 
-	#sys.stdout.write("\r")
-	#sys.stdout.write(TColors.italic + "Loading celestial bodies into ephem ... " + TColors.normal)
-	#sys.stdout.flush()
+	sys.stdout.write("\r")
+	sys.stdout.write(TColors.italic + "Loading celestial bodies into ephem ... " + TColors.normal)
+	sys.stdout.flush()
 
 	# named stars from YBS
 	ephem_wrapper.list_of_named_stars = open("named_stars.txt", "r").readlines()
@@ -121,9 +121,9 @@ def main():
 	ephem_wrapper.list_of_stars_YBS = open("YBS2.txt", "r").readlines()
 	ephem_wrapper.list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
-	#sys.stdout.write("\r")
-	#sys.stdout.write("                                                                          \n")
-	#sys.stdout.flush()
+	sys.stdout.write("\r")
+	sys.stdout.write("                                                                          \n")
+	sys.stdout.flush()
 
 	#print("\n")
 	recover_last_location()
@@ -150,8 +150,12 @@ def main():
 	quit_nicely()
 	return(0)
 
+print("before if")
 if __name__ == '__main__':
+	print("before main")
 	main()
+	print("afer main")
 
+print("after if")
 #GPIO.cleanup()
 #quit_nicely()
