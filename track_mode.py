@@ -98,6 +98,7 @@ def track():
 	while not found:
 		same_str_builder = ": " + config.same_str if config.same_str != "" else ""
 		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
+
 		location = input("Location (common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 
 		if location == "named":
@@ -160,6 +161,7 @@ def track():
 		try:
 			if wait_for( config.track_refresh_interval ) ==  True: break
 		except KeyboardInterrupt as err: # accept Ctrl+c
+			#print(TColors.red_on_black + "  [ keybord interrupt ... ]  " + TColors.normal)
 			pass
 
 		#print ("...next move now...")
