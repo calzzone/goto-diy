@@ -142,6 +142,7 @@ def main():
 			option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
 		except KeyboardInterrupt as err: # accept Ctrl+c
 			print(TColors.red_on_black + "  [ keybord interrupt ... ]  " + TColors.normal)
+			quit_nicely()
 			return()
 
 		if not option.isnumeric():
