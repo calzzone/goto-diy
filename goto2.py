@@ -20,25 +20,16 @@ from config import *
 print ("\n\x1b[1;37;42m ====== DIY GoTo Telesope Control ===== " + TColors.normal + " \n")
 
 
-#sys.stdout.write("\r")
-sys.stdout.write(TColors.italic + "Loading observers... " + TColors.normal)
-sys.stdout.flush()
 from load_observers import *
-config.observers = gather_observers(config.observers_file)
-config.observer, config.observer_name = set_observer(config.observer_name)
+#config.observers = gather_observers(config.observers_file)
+#config.observer, config.observer_name = set_observer(config.observer_name)
 
-sys.stdout.write("\r")
-sys.stdout.write(TColors.italic + "Loading landmarks... " + TColors.normal)
-sys.stdout.flush()
 from load_landmarks import *
-config.landmarks = gather_landmarks(config.landmarks_file)
+#config.landmarks = gather_landmarks(config.landmarks_file)
 
 from backup_location import * # CRITICAL: before set_functions
 from set_functions import * # CRITICAL: after backup_location
 
-sys.stdout.write("\r")
-sys.stdout.write(TColors.italic + "Loading celestial bodies into ephem ... " + TColors.normal)
-sys.stdout.flush()
 from ephem_wrapper import * # here: for printing names of stars
 
 #from move_function import * # not directly
@@ -46,18 +37,10 @@ from ephem_wrapper import * # here: for printing names of stars
 #from move_1_deg import * # not directly
 
 # Operating modes
-sys.stdout.write("\r")
-sys.stdout.write(TColors.italic + "Loading operating modes ... " + TColors.normal)
-sys.stdout.flush()
 from track_mode import *
 from go_to_mode import *
 from manual_drive_mode import *
 from scan_sky_mode import *
-
-sys.stdout.write("\r")
-sys.stdout.write(TColors.italic + "Everything loaded successfully! " + TColors.normal)
-sys.stdout.flush()
-print("")
 
 
 ##################
@@ -114,10 +97,41 @@ def switch_main(option):
 ################
 
 def main():
+
+	#sys.stdout.write("\r")
+	sys.stdout.write(TColors.italic + "Loading observers ... " + TColors.normal)
+	sys.stdout.flush()
+	config.observers = gather_observers(config.observers_file)
+	config.observer, config.observer_name = set_observer(config.observer_name)
+
+	sys.stdout.write("\r")
+	sys.stdout.write(TColors.italic + "Loading landmarks ... " + TColors.normal)
+	sys.stdout.flush()
+	config.landmarks = gather_landmarks(config.landmarks_file)
+
+	sys.stdout.write("\r")
+	sys.stdout.write(TColors.italic + "Loading celestial bodies into ephem ... " + TColors.normal)
+	sys.stdout.flush()
+
+	# named stars from YBS
+	ephem_wrapper.list_of_named_stars = open("named_stars.txt", "r").readlines()
+	ephem_wrapper.list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
+
+	# named stars in an other catalog
+	ephem_wrapper.list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+	ephem_wrapper.list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
+
+	sys.stdout.write("\r")
+
+	print("")
 	recover_last_location()
+	config.fake_star = make_fake_star(0, 0) # defined in config.py as None
 
 	option = 99 # default, also mapped to show_options()
 	while option != 0:
+		switch_main(int(option)) # first tine: show_options()
+
+		# next step
 		show_options()
 		option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
 		if not option.isnumeric():
@@ -125,7 +139,6 @@ def main():
 			option = 100 # do_nothing()
 			#continue
 
-		switch_main(int(option))
 		print('\n')
 
 	#GPIO.cleanup()

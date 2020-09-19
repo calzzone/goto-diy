@@ -19,16 +19,18 @@ import load_landmarks  # for print_landmarks()
 ###### available named bodies
 
 # named stars built into ephem # TODO: remove this, maybe
-list_of_ephem_stars = open("ephem_stars.txt", "r").readlines()
-list_of_ephem_stars = [star[:-1].lower() for star in list_of_ephem_stars]
+#list_of_ephem_stars = open("ephem_stars.txt", "r").readlines()
+#list_of_ephem_stars = [star[:-1].lower() for star in list_of_ephem_stars]
 
 # named stars from YBS
-list_of_named_stars = open("named_stars.txt", "r").readlines()
-list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
+list_of_named_stars = [] # loaded from __main__
+#list_of_named_stars = open("named_stars.txt", "r").readlines()
+#list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
 
 # named stars in an other catalog
-list_of_stars_YBS = open("YBS2.txt", "r").readlines()
-list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
+list_of_stars_YBS = [] # loaded from __main__
+#list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+#list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
 # Prints all available named stars, with the posibility to search / filter.
@@ -167,7 +169,7 @@ def make_fake_star(az = None, alt = None):
 	print ("Fake star defined at Az " + str(az) + " Alt " + str(alt))
 	return fake_star
 
-config.fake_star = make_fake_star(0, 0) # defined in config.py as None
+#config.fake_star = make_fake_star(0, 0) # defined in config.py as None
 
 
 ################## ephem: search
@@ -214,9 +216,9 @@ def search_0(target):
 		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
-	elif target.lower() in list_of_ephem_stars:
-		thing = ephem.star(string.capwords(target))
-		print("Star in ephem database: " + string.capwords(target))
+	#elif target.lower() in list_of_ephem_stars:
+	#	thing = ephem.star(string.capwords(target))
+	#	print("Star in ephem database: " + string.capwords(target))
 	elif target.lower().strip() in list_of_stars_YBS:
 		YBS2 = read_database("YBS2.edb")
 		star = list_of_stars_YBS.index( target.lower().strip() )
