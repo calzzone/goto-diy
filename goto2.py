@@ -133,34 +133,31 @@ def main():
 	# main loop:
 	option = 100 # default, do_nothing()
 	while option != 0:
-		print("option: ", option)
 		switch_main(int(option)) # first tine: do_nothing()
+		print('\n')
 
 		# next step
 		show_options()
 		try:
 			option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
 		except KeyboardInterrupt as err: # accept Ctrl+c
-			print("keybord interrupt ...")
+			print(TColors.red + "  [ keybord interrupt ... ]  " + TColors.normal)
 			return()
 
 		if not option.isnumeric():
 			print("Please choose one of the listed options! ")
 			option = 100 # do_nothing()
 			#continue
+		option = int(option)
 
-		print('\n')
 
 	#GPIO.cleanup()
 	quit_nicely()
 	return(0)
 
-print("before if")
+#print("before if")
 if __name__ == '__main__':
-	print("before main")
 	main()
-	print("afer main")
 
-print("after if")
 #GPIO.cleanup()
 #quit_nicely()
