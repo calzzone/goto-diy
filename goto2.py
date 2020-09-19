@@ -123,13 +123,15 @@ def main():
 
 	sys.stdout.write("\r")
 
-	print("")
+	print("\n")
 	recover_last_location()
 	config.fake_star = make_fake_star(0, 0) # defined in config.py as None
 
-	option = 99 # default, also mapped to show_options()
+
+	# main loop:
+	option = 100 # default, do_nothing()
 	while option != 0:
-		switch_main(int(option)) # first tine: show_options()
+		switch_main(int(option)) # first tine: do_nothing()
 
 		# next step
 		show_options()
@@ -139,6 +141,7 @@ def main():
 			option = 100 # do_nothing()
 			#continue
 
+		if int(option == 0): print("this is 0")
 		print('\n')
 
 	#GPIO.cleanup()
