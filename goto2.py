@@ -133,12 +133,17 @@ def main():
 	# main loop:
 	option = 100 # default, do_nothing()
 	while option != 0:
-		if option == 100: print(" --- ")
+		print("option: ", option)
 		switch_main(int(option)) # first tine: do_nothing()
 
 		# next step
 		show_options()
-		option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
+		try:
+			option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
+		except KeyboardInterrupt as err: # accept Ctrl+c
+			print("keybord interrupt ...")
+			return()
+
 		if not option.isnumeric():
 			print("Please choose one of the listed options! ")
 			option = 100 # do_nothing()
