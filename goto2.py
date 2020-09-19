@@ -1,7 +1,11 @@
 ### This is the main code file f my telescope control software.
 
+# Thanks to:
 # https://git.nexlab.net/astronomy/skylived/tree/bd59190026d9d95b39983f8a0106a7e17023aee8/DecraDB/xephemdb
 # https://github.com/Alex-Broughton/StarAtlas
+# I'll do proper credits eventually.
+
+import sys # for updatable print for status messages
 
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
@@ -16,16 +20,25 @@ from config import *
 print ("\n\x1b[1;37;42m ====== DIY GoTo Telesope Control ===== " + TColors.normal + " \n")
 
 
+#sys.stdout.write("\r")
+sys.stdout.write(TColors.italic + "Loading observers... " + TColors.normal)
+sys.stdout.flush()
 from load_observers import *
 config.observers = gather_observers(config.observers_file)
 config.observer, config.observer_name = set_observer(config.observer_name)
 
+sys.stdout.write("\r")
+sys.stdout.write(TColors.italic + "Loading landmarks... " + TColors.normal)
+sys.stdout.flush()
 from load_landmarks import *
 config.landmarks = gather_landmarks(config.landmarks_file)
 
 from backup_location import * # CRITICAL: before set_functions
 from set_functions import * # CRITICAL: after backup_location
 
+sys.stdout.write("\r")
+sys.stdout.write(TColors.italic + "Loading celestial bodies into ephem ... " + TColors.normal)
+sys.stdout.flush()
 from ephem_wrapper import * # here: for printing names of stars
 
 #from move_function import * # not directly
@@ -33,16 +46,23 @@ from ephem_wrapper import * # here: for printing names of stars
 #from move_1_deg import * # not directly
 
 # Operating modes
+sys.stdout.write("\r")
+sys.stdout.write(TColors.italic + "Loading operating modes ... " + TColors.normal)
+sys.stdout.flush()
 from track_mode import *
 from go_to_mode import *
 from manual_drive_mode import *
 from scan_sky_mode import *
 
-
-
+sys.stdout.write("\r")
+sys.stdout.write(TColors.italic + "Everything loaded successfully! " + TColors.normal)
+sys.stdout.flush()
+print("")
 
 
 ##################
+
+def do_nothing(): pass # passthrough nethtod for menu
 
 def quit_nicely():
 	GPIO.cleanup()
@@ -83,7 +103,10 @@ def switch_main(option):
 		22: print_available_stars,
 		23: print_landmarks,
 
-		31: make_fake_star
+		31: make_fake_star,
+
+		99: show_options, # hidden
+		100: do_nothing # hidden
 	}
 	func = switcher.get(option, show_options)
 	func()
@@ -92,13 +115,17 @@ def switch_main(option):
 
 def main():
 	recover_last_location()
-	show_options()
-	option = int(input(TColors.italic + "What is my purpose? " + TColors.normal))
-	print('\n')
+
+	option = 99 # default, also mapped to show_options()
 	while option != 0:
-		switch_main(option)
 		show_options()
-		option = int(input(TColors.italic + "What is my purpose? " + TColors.normal))
+		option = input(TColors.italic + "What is my purpose? " + TColors.normal).strip()
+		if not option.isnumeric():
+			print("Please choose one of the listed options! ")
+			option = 100 # do_nothing()
+			#continue
+
+		switch_main(int(option))
 		print('\n')
 
 	#GPIO.cleanup()
