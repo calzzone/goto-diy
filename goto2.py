@@ -122,6 +122,7 @@ def main():
 	ephem_wrapper.list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 	sys.stdout.write("\r")
+	sys.stdout.write("                                                                          \n")
 	sys.stdout.flush()
 
 	print("\n")
@@ -132,6 +133,7 @@ def main():
 	# main loop:
 	option = 100 # default, do_nothing()
 	while option != 0:
+		if option == 100: print(" --- ")
 		switch_main(int(option)) # first tine: do_nothing()
 
 		# next step
@@ -146,7 +148,7 @@ def main():
 
 	#GPIO.cleanup()
 	quit_nicely()
-	retun(0)
+	return(0)
 
 if __name__ == '__main__':
 	main()
