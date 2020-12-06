@@ -36,6 +36,7 @@ list_of_stars_YBS = [] # loaded from __main__
 # Prints all available named stars, with the posibility to search / filter.
 # $term filters by term at the begining. Cancel term is "~". Leave empty to list all.
 def print_named_stars():
+	print(list_of_named_stars)
 	while True:
 		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
