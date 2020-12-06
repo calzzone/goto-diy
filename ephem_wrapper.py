@@ -24,8 +24,9 @@ import load_landmarks  # for print_landmarks()
 
 # named stars from YBS
 list_of_named_stars = [] # loaded from __main__
-#list_of_named_stars = open("named_stars.txt", "r").readlines()
-#list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
+list_of_named_stars = open("named_stars.txt", "r").readlines()
+list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
+print("named stars", list_of_named_stars)
 
 # named stars in an other catalog
 list_of_stars_YBS = [] # loaded from __main__
