@@ -26,23 +26,20 @@ import load_landmarks  # for print_landmarks()
 list_of_named_stars = [] # loaded from __main__
 list_of_named_stars = open("named_stars.txt", "r").readlines()
 list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
-print("named stars", list_of_named_stars)
 
 # named stars in an other catalog
 list_of_stars_YBS = [] # loaded from __main__
-#list_of_stars_YBS = open("YBS2.txt", "r").readlines()
-#list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
+list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
 # Prints all available named stars, with the posibility to search / filter.
 # $term filters by term at the begining. Cancel term is "~". Leave empty to list all.
 def print_named_stars():
-	print(list_of_named_stars)
 	while True:
 		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
 		elif filter.startswith("$"): # starts with filter term
-			print("stars starting with: " + filter[1:] + ": ")
 			stars = [star for star in list_of_named_stars if star.startswith(filter[1:])]
 		else:
 			stars = [star for star in list_of_named_stars if filter in star]

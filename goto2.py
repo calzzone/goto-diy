@@ -114,13 +114,12 @@ def main():
 	sys.stdout.flush()
 
 	# named stars from YBS
-	ephem_wrapper.list_of_named_stars = open("named_stars.txt", "r").readlines()
-	ephem_wrapper.list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
-	print(ephem_wrapper.list_of_named_stars)
+	#ephem_wrapper.list_of_named_stars = open("named_stars.txt", "r").readlines()
+	#ephem_wrapper.list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
 
 	# named stars in an other catalog
-	ephem_wrapper.list_of_stars_YBS = open("YBS2.txt", "r").readlines()
-	ephem_wrapper.list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
+	#ephem_wrapper.list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+	#ephem_wrapper.list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 	sys.stdout.write("\r")
 	sys.stdout.write("                                                                          \n")
