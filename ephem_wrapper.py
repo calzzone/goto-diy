@@ -40,7 +40,7 @@ def print_named_stars():
 		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
 		elif filter.startswith("$"): # starts with filter term
-            print("stars starting with: " + filter[1:] + ": ")
+			print("stars starting with: " + filter[1:] + ": ")
 			stars = [star for star in list_of_named_stars if star.startswith(filter[1:])]
 		else:
 			stars = [star for star in list_of_named_stars if filter in star]
