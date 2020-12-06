@@ -159,8 +159,6 @@ def main():
 #print("before if")
 if __name__ == '__main__':
 	main()
-	
 
 #GPIO.cleanup()
 #quit_nicely()
-
