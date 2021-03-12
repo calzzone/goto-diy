@@ -106,7 +106,7 @@ def track():
 		if location == "ephem":
 			print_ephem_stars()
 			continue
-        if location == "named":
+		if location == "named":
 			print_named_stars()
 			continue
 		if location == "all":

@@ -44,7 +44,7 @@ def print_ephem_stars():
 		else:
 			stars = [star for star in list_of_ephem_stars if filter in star]
 		print(", ".join(stars))
-		
+
 def print_named_stars():
 	while True:
 		filter = input("List of available named stars, $ marks beginning, type filter or ~ to cancel:").strip().lower()
@@ -234,6 +234,7 @@ def search_0(target):
 		star = list_of_stars_YBS.index( target.lower().strip() )
 		print("Bright stars catalog (YBS): " + YBS2[star][0] + " (" + YBS2[star][1] + ")")
 		thing = YBS2[star][2]
+		print("RA=", thing._ra)
 	elif target == "fake": # fake body, defined by az/alt
 		print("Targetting the fake star...")
 		thing = config.fake_star
