@@ -1,7 +1,6 @@
 
 ## Settings file
 
-
 # Print in color
 # https://stackoverflow.com/questions/287871/how-to-print-colored-text-in-python
 
@@ -35,7 +34,6 @@ class TColors:
 # examples: https://i.stack.imgur.com/6otvY.png
 
 
-
 # Raspberry Pi GPIO access
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -57,11 +55,10 @@ MICROSTEP_RESOLUTION = {'Full': (0, 0, 0),
 MICROSTEP_FACTOR = { 'Full': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32 }
 
 
-
 ##### Azimuth control
 
-DIR_AZ = 19 # Direction GPIO Pin
-STEP_AZ = 26 # Step GPIO Pin
+DIR_AZ = 17 #19 # Direction GPIO Pin
+STEP_AZ = 27 #26 # Step GPIO Pin
 CW_AZ = 1 # Clockwise Rotation
 CCW_AZ = 0 # Counterclockwise Rotation
 
@@ -73,7 +70,8 @@ microstep_az = '1/4'
 SPR_BASE_AZ = 200*(360/36) # Steps per Revolution (360 / 1.8) * gear reduction
 steps_per_rotation_AZ = SPR_BASE_AZ * MICROSTEP_FACTOR[ microstep_az ]
 
-MODE_AZ = (23, 24, 25) # Microstep Resolution GPIO Pins
+# MODE_AZ = (23, 24, 25) # Microstep Resolution GPIO Pins
+MODE_AZ = (2, 3, 4) # Microstep Resolution GPIO Pins
 GPIO.setup(MODE_AZ, GPIO.OUT)
 GPIO.output(MODE_AZ, MICROSTEP_RESOLUTION[ microstep_az ])
 #print ("Step size (Az): " + str( 360.0 / steps_per_rotation_AZ ) + " degrees. Microstepping: " + microstep_az + " .")
@@ -90,10 +88,10 @@ azimuth = 0.0
 
 ##### ALtitude control
 
-DIR_ALT = 16   # Direction GPIO Pin
-STEP_ALT = 20  # Step GPIO Pin
-CW_ALT = 1	 # Clockwise Rotation
-CCW_ALT = 0	# Counterclockwise Rotation
+DIR_ALT = 21 # 16   # Direction GPIO Pin
+STEP_ALT = 20 # 20  # Step GPIO Pin
+CW_ALT = 0 # 1 	 # Clockwise Rotation
+CCW_ALT = 1 # 0 	# Counterclockwise Rotation
 
 GPIO.setup(DIR_ALT, GPIO.OUT)
 GPIO.setup(STEP_ALT, GPIO.OUT)
@@ -103,7 +101,8 @@ microstep_alt = '1/16'
 SPR_BASE_ALT = 200*(180/36)   # Steps per Revolution (360 / 1.8) * gear reduction
 steps_per_rotation_ALT = SPR_BASE_ALT * MICROSTEP_FACTOR[ microstep_alt ]
 
-MODE_ALT = (14, 15, 18)   # Microstep Resolution GPIO Pins
+# MODE_ALT = (14, 15, 18)   # Microstep Resolution GPIO Pins
+MODE_ALT = (6, 13, 19)   # Microstep Resolution GPIO Pins
 GPIO.setup(MODE_ALT, GPIO.OUT)
 GPIO.output(MODE_ALT, MICROSTEP_RESOLUTION[ microstep_alt ])
 #print ("Step size (Alt): " + str( 360.0 / steps_per_rotation_ALT ) + " degrees. Microstepping: " + microstep_alt + " .")
@@ -118,9 +117,7 @@ delay_ALT = 360.0 / (speed_ALT * steps_per_rotation_ALT * 2.0)
 altitude = 0.0
 
 
-
 ################## other parameters
-
 
 same = "0 0" # keep track of the last successfull searched location. TODO: fix the bug whih affects last_location_file
 same_str = "" # print-ready version of same (only when same is a body)

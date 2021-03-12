@@ -97,11 +97,16 @@ def track():
 	found = False
 	while not found:
 		same_str_builder = ": " + config.same_str if config.same_str != "" else ""
-		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
+		print("Search for celestial body.")
+		print("To list stars in ephem catalogue type 'ephem'. To list stars in YBS catalogue type 'named' or 'all'.")
+		print("To list landmakrs type 'landmarks'.")
 
 		location = input("Location (common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
 
-		if location == "named":
+		if location == "ephem":
+			print_ephem_stars()
+			continue
+        if location == "named":
 			print_named_stars()
 			continue
 		if location == "all":

@@ -1,7 +1,7 @@
 # Functions relating to the ephem library, most importantly serching for objects
 # in the ephem database or custom .edb files.
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import string
 import math
@@ -19,8 +19,8 @@ import load_landmarks  # for print_landmarks()
 ###### available named bodies
 
 # named stars built into ephem # TODO: remove this, maybe
-#list_of_ephem_stars = open("ephem_stars.txt", "r").readlines()
-#list_of_ephem_stars = [star[:-1].lower() for star in list_of_ephem_stars]
+list_of_ephem_stars = open("ephem_stars.txt", "r").readlines()
+list_of_ephem_stars = [star[:-1].lower() for star in list_of_ephem_stars]
 
 # named stars from YBS
 list_of_named_stars = [] # loaded from __main__
@@ -35,9 +35,19 @@ list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 # Prints all available named stars, with the posibility to search / filter.
 # $term filters by term at the begining. Cancel term is "~". Leave empty to list all.
+def print_ephem_stars():
+	while True:
+		filter = input("List of available named ephem stars, $ marks beginning, type filter or ~ to cancel:").strip().lower()
+		if filter == "~": return()
+		elif filter.startswith("$"): # starts with filter term
+			stars = [star for star in list_of_ephem_stars if star.startswith(filter[1:])]
+		else:
+			stars = [star for star in list_of_ephem_stars if filter in star]
+		print(", ".join(stars))
+		
 def print_named_stars():
 	while True:
-		filter = input("List of available named stars, type filter or ~ to cancel:").strip().lower()
+		filter = input("List of available named stars, $ marks beginning, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
 		elif filter.startswith("$"): # starts with filter term
 			stars = [star for star in list_of_named_stars if star.startswith(filter[1:])]
@@ -48,7 +58,7 @@ def print_named_stars():
 def print_available_stars():
 	print("List of all available stars:")
 	while True:
-		filter = input("List all available stars in the YBS catalogue, type filter or ~ to cancel:").strip().lower()
+		filter = input("List all available stars in the YBS catalogue, $ marks beginning, type filter or ~ to cancel:").strip().lower()
 		if filter == "~": return()
 		elif filter.startswith("$"): # starts with filter term
 			stars = [star for star in list_of_stars_YBS if star.startswith(filter[1:])]
@@ -140,7 +150,7 @@ def compute(thing, observer):
 	now = datetime.utcnow()
 	observer.date = now
 	thing.compute(config.observer)
-	print("Angle Az Alt:", thing.az, thing.alt)
+	print("Angle Az Alt:", thing.az, thing.alt, "UTC now:", now)
 	return(thing.az*180/math.pi, thing.alt*180/math.pi)
 
 	#return(#ephem.degrees(thing.az), ephem.degrees(thing.alt),
@@ -216,9 +226,9 @@ def search_0(target):
 		ugc = read_database("UGC.edb")
 		name = "UGC" + target[3:].strip()
 		thing = find_body_by_name(name, ugc)
-	#elif target.lower() in list_of_ephem_stars:
-	#	thing = ephem.star(string.capwords(target))
-	#	print("Star in ephem database: " + string.capwords(target))
+	elif target.lower() in list_of_ephem_stars:
+		thing = ephem.star(string.capwords(target))
+		print("Star in ephem database: " + string.capwords(target))
 	elif target.lower().strip() in list_of_stars_YBS:
 		YBS2 = read_database("YBS2.edb")
 		star = list_of_stars_YBS.index( target.lower().strip() )
@@ -245,8 +255,13 @@ def search():
 
 	while True:
 		same_str_builder = ": " + config.same_str if config.same_str != "" else ""
-		print("Search for celestial body. To list stars in YBS catalogue type 'named' or 'all'. To list landmakrs type 'landmarks'.")
+		print("Search for celestial body.")
+		print("To list stars in ephem catalogue type 'ephem'. To list stars in YBS catalogue type 'named' or 'all'.")
+		print("To list landmakrs type 'landmarks'.")
 		location = input("Location (`home`, Az [0-360) Alt [0-90 deg], common name, 'same`" + same_str_builder + " or 'c' to cancel): ")
+		if location == "ephem":
+			print_ephem_stars()
+			continue
 		if location == "named":
 			print_named_stars()
 			continue

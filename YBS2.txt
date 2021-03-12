@@ -25,6 +25,7 @@ Aldhibah
 Aldulfin
 Alfirk
 Algedi
+Algeiba
 Algenib
 Algieba
 Algol
@@ -39,6 +40,7 @@ Alkarab
 Alkes
 Almaaz
 Almach
+Almak
 Alnair
 Alnasl
 Alnath
@@ -316,6 +318,7 @@ Aqr-Xi
 Aqr-Xi-23
 Aqr-Zeta1-55
 Aqr-Zeta2-55
+Aqu-Beta
 Ara-Alpha
 Ara-Beta
 Ara-Delta
@@ -471,7 +474,6 @@ Aur-Theta
 Aur-Theta-37
 Aur-Upsilon-31
 Aur-Xi-30
-Aur-Zeta
 Aur-Zeta-8
 Avior
 Azelfafage
@@ -688,6 +690,7 @@ Cas-Epsilon
 Cas-Epsilon-45
 Cas-Eta
 Cas-Eta-24
+Cas-Gamma
 Cas-Gamma-27
 Cas-Iota
 Cas-Kappa-15
@@ -739,7 +742,6 @@ Cen-Psi
 Cen-Rho
 Cen-Sigma
 Cen-Tau
-Cen-Theta
 Cen-Theta-5
 Cen-Upsilon1
 Cen-Upsilon2
@@ -914,6 +916,7 @@ CMa-Nu1-6
 CMa-Nu2-7
 CMa-Nu3-8
 CMa-Omega-28
+CMa-Omicron
 CMa-Omicron1-16
 CMa-Omicron2-24
 CMa-Pi-19
@@ -1070,7 +1073,6 @@ Com-Alpha-42
 Com-Beta-43
 Com-Gamma-15
 Copernicus
-Cor Caroli
 Cor-Caroli
 CrA-Alpha
 CrA-Beta
@@ -1281,8 +1283,7 @@ Del-Kappa-7
 Del-Theta-8
 Del-Zeta-4
 Deneb
-Deneb Algedi
-Deneb-Algiedi
+Deneb Algiedi
 Denebola
 Diadem
 Diphda
@@ -1633,7 +1634,6 @@ Hassaleh
 Hatysa
 HD149026
 Helvetios
-Her
 Her-10
 Her-100
 Her-101
@@ -1701,6 +1701,7 @@ Her-96
 Her-97
 Her-98
 Her-99
+Her-Alpha
 Her-Alpha1
 Her-Alpha1-64
 Her-Alpha2-64
@@ -1729,6 +1730,7 @@ Her-Tau-22
 Her-Theta-91
 Her-Upsilon-6
 Her-Xi-92
+Her-Zeta
 Her-Zeta-40
 Heze
 Homam
@@ -2278,6 +2280,7 @@ Leo-Alpha
 Leo-Beta
 Leo-Chi-63
 Leo-Delta
+Leo-Epsilon
 Leo-Epsilon-17
 Leo-Eta-30
 Leo-Gamma1
@@ -2580,6 +2583,7 @@ Mon-Epsilon-8
 Mon-Gamma-5
 Mon-Zeta-29
 Mothallah
+Muhlifain
 Muliphein
 Muphrid
 Mus-Alpha
@@ -2703,6 +2707,7 @@ Oph-Theta-42
 Oph-Upsilon-3
 Oph-V2500
 Oph-Xi-40
+Oph-Zeta
 Oph-Zeta-13
 Ori-11
 Ori-13
@@ -2940,6 +2945,7 @@ Per-9
 Per-Alpha
 Per-Beta
 Per-Delta-39
+Per-Epsilon
 Per-Epsilon-45
 Per-Eta
 Per-Eta-15
@@ -2962,6 +2968,7 @@ Per-Tau-18
 Per-Theta-13
 Per-Xi
 Per-Xi-46
+Per-Zeta
 Per-Zeta-44
 Phact
 Phakt
@@ -3424,6 +3431,7 @@ Sgr-Delta
 Sgr-Delta-19
 Sgr-Epsilon
 Sgr-Eta
+Sgr-Gamma
 Sgr-Gamma1
 Sgr-Gamma2
 Sgr-Gamma2-10
@@ -3654,6 +3662,7 @@ Tri-6
 Tri-7
 Tri-Alpha
 Tri-Alpha-2
+Tri-Beta
 Tri-Beta-4
 Tri-Delta-8
 Tri-Epsilon-3
@@ -3754,6 +3763,7 @@ UMa-Omicron-1
 UMa-Phi-30
 UMa-Pi1-3
 UMa-Pi2-4
+UMa-Psi
 UMa-Psi-52
 UMa-Rho-8
 UMa-Sigma1-11
@@ -3787,11 +3797,13 @@ Unukalhay
 Unurgunite
 Vega
 Vel-Delta
+Vel-Gamma
 Vel-Gamma1
 Vel-Gamma2
 Vel-Kappa
 Vel-Lambda
 Vel-Mu
+Vel-Nu
 Velox Barnardi
 Vel-Phi
 Vel-Psi
