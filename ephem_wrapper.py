@@ -29,7 +29,7 @@ list_of_named_stars = [star[:-1].lower() for star in list_of_named_stars]
 
 # named stars in an other catalog
 list_of_stars_YBS = [] # loaded from __main__
-list_of_stars_YBS = open("YBS2.txt", "r").readlines()
+list_of_stars_YBS = open("YBS3.txt", "r").readlines()
 list_of_stars_YBS = [star[:-1].lower() for star in list_of_stars_YBS]
 
 
@@ -230,10 +230,10 @@ def search_0(target):
 		thing = ephem.star(string.capwords(target))
 		print("Star in ephem database: " + string.capwords(target))
 	elif target.lower().strip() in list_of_stars_YBS:
-		YBS2 = read_database("YBS2.edb")
+		YBS3 = read_database("YBS3.edb")
 		star = list_of_stars_YBS.index( target.lower().strip() )
-		print("Bright stars catalog (YBS): " + YBS2[star][0] + " (" + YBS2[star][1] + ")")
-		thing = YBS2[star][2]
+		print("Bright stars catalog (YBS): " + YBS3[star][0] + " (" + YBS3[star][1] + ")")
+		thing = YBS3[star][2]
 		print("RA=", thing._ra)
 	elif target == "fake": # fake body, defined by az/alt
 		print("Targetting the fake star...")
